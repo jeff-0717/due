@@ -47,9 +47,44 @@ void main() {
     expect(find.textContaining('Never checked'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('monitor list keeps source visible after failed manual check',
+      (tester) async {
+    await tester.pumpWidget(
+      _buildApp(
+        '/monitor',
+        fetcher: _FailingFetcher(),
+      ),
+    );
+
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(MonitorListPage)),
+    );
+    await container.read(monitorSourceListProvider.notifier).add(
+          schoolName: '东南大学',
+          sourceName: '研究生招生公告',
+          url: 'https://yzb.seu.edu.cn',
+          sourceType: MonitorSourceType.webPage,
+          keywords: const ['2027年', '夏令营', '推免', '硕士研究生'],
+          isEnabled: true,
+        );
+    await tester.pump();
+
+    await tester.tap(find.byIcon(Icons.refresh));
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text('东南大学'), findsOneWidget);
+    expect(find.textContaining('failure'), findsOneWidget);
+    expect(find.textContaining('Check failed'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }
 
-Widget _buildApp(String initialLocation) {
+Widget _buildApp(
+  String initialLocation, {
+  MonitorCandidateFetcher? fetcher,
+}) {
   final monitorRepository = MonitorRepository(null);
   final router = GoRouter(
     initialLocation: initialLocation,
@@ -83,7 +118,7 @@ Widget _buildApp(String initialLocation) {
       monitorCheckServiceProvider.overrideWithValue(
         MonitorCheckService(
           repository: monitorRepository,
-          fetcher: _EmptyFetcher(),
+          fetcher: fetcher ?? _EmptyFetcher(),
         ),
       ),
     ],
@@ -109,5 +144,12 @@ class _EmptyFetcher implements MonitorCandidateFetcher {
   @override
   Future<MonitorFetchResult> fetchCandidates(MonitorSource source) async {
     return const MonitorFetchResult.success([]);
+  }
+}
+
+class _FailingFetcher implements MonitorCandidateFetcher {
+  @override
+  Future<MonitorFetchResult> fetchCandidates(MonitorSource source) async {
+    return const MonitorFetchResult.failure('network unavailable');
   }
 }

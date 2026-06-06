@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../models/monitor_source.dart';
 import '../providers/monitor_provider.dart';
+import '../services/monitor_check_service.dart';
 import '../theme/app_tokens.dart';
 
 class MonitorListPage extends ConsumerWidget {
@@ -42,7 +43,11 @@ class MonitorListPage extends ConsumerWidget {
                           : Icons.language,
                     ),
                     title: Text(source.schoolName),
-                    subtitle: Text(_subtitle(source, state)),
+                    subtitle: Text(
+                      _subtitle(source, state),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     trailing: SizedBox(
                       width: 144,
                       child: Row(
@@ -93,16 +98,16 @@ class MonitorListPage extends ConsumerWidget {
     );
   }
 
-  String _subtitle(MonitorSource source, dynamic state) {
+  String _subtitle(MonitorSource source, MonitorCheckResult? state) {
     final lastChecked = source.lastCheckedAt == null
         ? 'Never checked'
         : 'Last checked ${source.lastCheckedAt}';
     final keywords = source.keywords.join(', ');
-    final liveState = state == null ? '' : ' · ${state.status.name}';
-    return '$lastChecked · $keywords$liveState';
+    final liveState = state == null ? '' : ' - ${state.status.name}';
+    return '$lastChecked - $keywords$liveState';
   }
 
-  String _resultText(dynamic result) {
+  String _resultText(MonitorCheckResult result) {
     if (result.errorMessage != null) return 'Check failed: ${result.errorMessage}';
     if (result.newHitCount == 0) return 'No new hits';
     return 'Found ${result.newHitCount} new hit(s)';
