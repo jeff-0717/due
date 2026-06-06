@@ -30,11 +30,20 @@ class CountdownOverview extends StatelessWidget {
           AppTokens.spacing, AppTokens.spacing, AppTokens.spacing, 8),
       padding: const EdgeInsets.all(AppTokens.spacing + 8),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
+        color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(AppTokens.radiusLarge),
       ),
       child: Column(
         children: [
+          const Text(
+            'Next up',
+            style: TextStyle(
+              fontSize: AppTokens.fontSizeSmall,
+              fontWeight: FontWeight.w600,
+              color: AppTokens.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 8),
           Text(
             nearest!.title,
             style: const TextStyle(

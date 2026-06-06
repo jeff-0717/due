@@ -46,7 +46,7 @@ class HomePage extends ConsumerWidget {
       body: countdowns.isEmpty
           ? EmptyState(
               message: 'No countdowns yet',
-              actionLabel: 'Add your first countdown',
+              actionLabel: 'Start with one important date',
               onAction: () => context.push('/add'),
             )
           : ListView(
@@ -55,14 +55,29 @@ class HomePage extends ConsumerWidget {
                   nearest: nearest,
                   reviewDays: reviewDays,
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(
                       AppTokens.spacing, 16, AppTokens.spacing, 8),
                   child: Text(
                     'All Countdowns',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
+                      color: AppTokens.textSecondary,
+                    ),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    AppTokens.spacing,
+                    0,
+                    AppTokens.spacing,
+                    8,
+                  ),
+                  child: Text(
+                    'Sorted by next date',
+                    style: TextStyle(
+                      fontSize: AppTokens.fontSizeSmall,
                       color: AppTokens.textSecondary,
                     ),
                   ),
