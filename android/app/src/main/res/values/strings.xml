@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Due</string>
+    <string name="due_widget_name">Due Countdown</string>
+    <string name="due_widget_description">Shows the selected countdown on your home screen.</string>
+</resources>

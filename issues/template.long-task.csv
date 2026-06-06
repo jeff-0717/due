@@ -1,0 +1,2 @@
+id,priority,phase,area,title,description,acceptance_criteria,test_mcp,required_skills,required_mcp,review_initial_requirements,review_regression_requirements,dev_state,review_initial_state,review_regression_state,git_state,owner,refs,notes
+LT-001,P0,phase-1,core,Example issue,Replace this row with one atomic task,Run the named verification and confirm expected behavior,AUTOSERVER,,,"Check implementation against acceptance criteria","Run related regression checks",not_started,not_started,not_started,uncommitted,codex,docs/superpowers/specs/example.md,"risk:template row"
