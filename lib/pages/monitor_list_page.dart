@@ -43,38 +43,44 @@ class MonitorListPage extends ConsumerWidget {
                     ),
                     title: Text(source.schoolName),
                     subtitle: Text(_subtitle(source, state)),
-                    trailing: Wrap(
-                      spacing: 4,
-                      children: [
-                        IconButton(
-                          tooltip: 'Check now',
-                          icon: const Icon(Icons.refresh),
-                          onPressed: source.isEnabled
-                              ? () async {
-                                  final result = await ref
-                                      .read(monitorCheckStateProvider.notifier)
-                                      .check(source.id);
-                                  if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(_resultText(result)),
-                                      ),
-                                    );
+                    trailing: SizedBox(
+                      width: 144,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            tooltip: 'Check now',
+                            icon: const Icon(Icons.refresh),
+                            onPressed: source.isEnabled
+                                ? () async {
+                                    final result = await ref
+                                        .read(monitorCheckStateProvider.notifier)
+                                        .check(source.id);
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(_resultText(result)),
+                                        ),
+                                      );
+                                    }
                                   }
-                                }
-                              : null,
-                        ),
-                        IconButton(
-                          tooltip: 'Hits',
-                          icon: const Icon(Icons.article_outlined),
-                          onPressed: () => context.push('/monitor/${source.id}/hits'),
-                        ),
-                        IconButton(
-                          tooltip: 'Edit',
-                          icon: const Icon(Icons.edit_outlined),
-                          onPressed: () => context.push('/monitor/edit/${source.id}'),
-                        ),
-                      ],
+                                : null,
+                          ),
+                          IconButton(
+                            tooltip: 'Hits',
+                            icon: const Icon(Icons.article_outlined),
+                            onPressed: () =>
+                                context.push('/monitor/${source.id}/hits'),
+                          ),
+                          IconButton(
+                            tooltip: 'Edit',
+                            icon: const Icon(Icons.edit_outlined),
+                            onPressed: () =>
+                                context.push('/monitor/edit/${source.id}'),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );

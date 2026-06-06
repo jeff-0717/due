@@ -45,6 +45,7 @@ void main() {
 
     expect(find.text('North University'), findsOneWidget);
     expect(find.textContaining('Never checked'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }
 
