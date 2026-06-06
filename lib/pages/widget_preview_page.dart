@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../providers/countdown_provider.dart';
 import '../providers/widget_config_provider.dart';
 import '../providers/widget_sync_provider.dart';
@@ -49,53 +48,63 @@ class WidgetPreviewPage extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             Expanded(
-              child: ListView.separated(
-                itemCount: countdowns.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 8),
-                itemBuilder: (context, index) {
-                  final item = countdowns[index];
-                  final isSelected = item.id == selectedId;
-                  final color =
-                      Color(int.parse(item.color.replaceFirst('#', '0xFF')));
-                  return ListTile(
-                    leading: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: color.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(10),
+              child: countdowns.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'No countdowns available',
+                        style: TextStyle(color: AppTokens.textSecondary),
                       ),
-                      child: Center(
-                          child: Text(item.icon,
-                              style: const TextStyle(fontSize: 20))),
+                    )
+                  : ListView.separated(
+                      itemCount: countdowns.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 8),
+                      itemBuilder: (context, index) {
+                        final item = countdowns[index];
+                        final isSelected = item.id == selectedId;
+                        final color = Color(
+                            int.parse(item.color.replaceFirst('#', '0xFF')));
+                        return ListTile(
+                          leading: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: color.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Center(
+                                child: Text(item.icon,
+                                    style: const TextStyle(fontSize: 20))),
+                          ),
+                          title: Text(item.title),
+                          subtitle:
+                              Text(AppDateUtils.formatDate(item.targetDate)),
+                          trailing: isSelected
+                              ? const Icon(Icons.check_circle,
+                                  color: AppTokens.primary)
+                              : null,
+                          onTap: () {
+                            ref
+                                .read(widgetConfigProvider.notifier)
+                                .set(item.id, 'default');
+                          },
+                        );
+                      },
                     ),
-                    title: Text(item.title),
-                    subtitle: Text(AppDateUtils.formatDate(item.targetDate)),
-                    trailing: isSelected
-                        ? const Icon(Icons.check_circle,
-                            color: AppTokens.primary)
-                        : null,
-                    onTap: () {
-                      ref
-                          .read(widgetConfigProvider.notifier)
-                          .set(item.id, 'default');
-                    },
-                  );
-                },
-              ),
             ),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () async {
-                  if (selected != null) {
-                    final sync = ref.read(widgetSyncServiceProvider);
-                    await sync.syncCountdown(selected);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Synced to widget')),
-                    );
-                  }
-                },
+                onPressed: selected == null
+                    ? null
+                    : () async {
+                        final sync = ref.read(widgetSyncServiceProvider);
+                        await sync.syncCountdown(selected);
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Synced to widget')),
+                          );
+                        }
+                      },
                 child: const Text('Sync to Widget'),
               ),
             ),
