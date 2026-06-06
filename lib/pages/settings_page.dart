@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/countdown_provider.dart';
 import '../providers/hive_provider.dart';
+import '../providers/monitor_provider.dart';
 import '../providers/review_start_provider.dart';
 import '../providers/widget_config_provider.dart';
 import '../theme/app_tokens.dart';
@@ -37,6 +38,13 @@ class SettingsPage extends ConsumerWidget {
             title: 'Widget Preview',
             subtitle: 'Configure your home screen widget',
             onTap: () => context.push('/widget-preview'),
+          ),
+          const SizedBox(height: 8),
+          _buildItem(
+            icon: Icons.travel_explore_outlined,
+            title: 'School Monitoring',
+            subtitle: 'Manage notice sources and hits',
+            onTap: () => context.push('/monitor'),
           ),
           const SizedBox(height: 8),
           _buildItem(
@@ -82,6 +90,8 @@ class SettingsPage extends ConsumerWidget {
                 ref.invalidate(countdownListProvider);
                 ref.invalidate(reviewStartProvider);
                 ref.invalidate(widgetConfigProvider);
+                ref.invalidate(monitorSourceListProvider);
+                ref.invalidate(monitorHitListProvider);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('All data cleared')),

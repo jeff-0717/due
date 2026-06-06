@@ -38,16 +38,26 @@ class HomePage extends ConsumerWidget {
         title: const Text('Due'),
         actions: [
           IconButton(
+            tooltip: 'School Monitoring',
+            icon: const Icon(Icons.travel_explore_outlined),
+            onPressed: () => context.push('/monitor'),
+          ),
+          IconButton(
             icon: const Icon(Icons.settings_outlined),
             onPressed: () => context.push('/settings'),
           ),
         ],
       ),
       body: countdowns.isEmpty
-          ? EmptyState(
-              message: 'No countdowns yet',
-              actionLabel: 'Start with one important date',
-              onAction: () => context.push('/add'),
+          ? ListView(
+              children: [
+                _MonitorEntry(onTap: () => context.push('/monitor')),
+                EmptyState(
+                  message: 'No countdowns yet',
+                  actionLabel: 'Start with one important date',
+                  onAction: () => context.push('/add'),
+                ),
+              ],
             )
           : ListView(
               children: [
@@ -94,6 +104,33 @@ class HomePage extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.push('/add'),
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class _MonitorEntry extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _MonitorEntry({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppTokens.spacing,
+        AppTokens.spacing,
+        AppTokens.spacing,
+        0,
+      ),
+      child: Card(
+        child: ListTile(
+          leading: const Icon(Icons.travel_explore_outlined),
+          title: const Text('School Monitoring'),
+          subtitle: const Text('Track RSS and static notice pages'),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: onTap,
+        ),
       ),
     );
   }

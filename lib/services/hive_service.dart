@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:hive/hive.dart';
 
 import '../models/countdown.dart';
+import '../models/monitor_hit.dart';
+import '../models/monitor_source.dart';
 import '../models/review_start.dart';
 import '../models/widget_config.dart';
 
@@ -10,15 +12,21 @@ class HiveService {
   static const String countdownBoxName = 'countdowns';
   static const String reviewStartBoxName = 'review_start';
   static const String widgetConfigBoxName = 'widget_config';
+  static const String monitorSourceBoxName = 'monitor_sources';
+  static const String monitorHitBoxName = 'monitor_hits';
 
   late Box<String> _countdownBox;
   late Box<String> _reviewStartBox;
   late Box<String> _widgetConfigBox;
+  late Box<String> _monitorSourceBox;
+  late Box<String> _monitorHitBox;
 
   Future<void> init() async {
     _countdownBox = await Hive.openBox<String>(countdownBoxName);
     _reviewStartBox = await Hive.openBox<String>(reviewStartBoxName);
     _widgetConfigBox = await Hive.openBox<String>(widgetConfigBoxName);
+    _monitorSourceBox = await Hive.openBox<String>(monitorSourceBoxName);
+    _monitorHitBox = await Hive.openBox<String>(monitorHitBoxName);
   }
 
   // Countdown
@@ -87,10 +95,44 @@ class HiveService {
     await _widgetConfigBox.delete(id);
   }
 
+  Future<void> saveMonitorSource(MonitorSource item) async {
+    await _monitorSourceBox.put(item.id, jsonEncode(item.toJson()));
+  }
+
+  MonitorSource? getMonitorSource(String id) {
+    final raw = _monitorSourceBox.get(id);
+    if (raw == null) return null;
+    return MonitorSource.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+  }
+
+  List<MonitorSource> getAllMonitorSources() {
+    return _monitorSourceBox.values
+        .map((raw) =>
+            MonitorSource.fromJson(jsonDecode(raw) as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<void> deleteMonitorSource(String id) async {
+    await _monitorSourceBox.delete(id);
+  }
+
+  Future<void> saveMonitorHit(MonitorHit item) async {
+    await _monitorHitBox.put(item.id, jsonEncode(item.toJson()));
+  }
+
+  List<MonitorHit> getAllMonitorHits() {
+    return _monitorHitBox.values
+        .map((raw) =>
+            MonitorHit.fromJson(jsonDecode(raw) as Map<String, dynamic>))
+        .toList();
+  }
+
   // Clear all
   Future<void> clearAll() async {
     await _countdownBox.clear();
     await _reviewStartBox.clear();
     await _widgetConfigBox.clear();
+    await _monitorSourceBox.clear();
+    await _monitorHitBox.clear();
   }
 }
