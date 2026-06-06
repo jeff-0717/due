@@ -1,5 +1,7 @@
+import 'package:due/models/monitor_hit.dart';
 import 'package:due/models/monitor_source.dart';
 import 'package:due/pages/home_page.dart';
+import 'package:due/pages/monitor_hits_page.dart';
 import 'package:due/pages/monitor_list_page.dart';
 import 'package:due/providers/countdown_provider.dart';
 import 'package:due/providers/monitor_provider.dart';
@@ -10,6 +12,7 @@ import 'package:due/repositories/review_start_repository.dart';
 import 'package:due/services/hive_service.dart';
 import 'package:due/services/monitor_check_service.dart';
 import 'package:due/services/monitor_fetch_service.dart';
+import 'package:due/services/monitor_link_opener.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -78,11 +81,67 @@ void main() {
     expect(find.textContaining('检查失败'), findsWidgets);
     expect(tester.takeException(), isNull);
   });
+  testWidgets('monitor hits show readable notice card and open original link',
+      (tester) async {
+    final opener = _FakeLinkOpener();
+    await tester
+        .pumpWidget(_buildApp('/monitor/source-1/hits', opener: opener));
+
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(MonitorHitsPage)),
+    );
+    final repository = container.read(monitorRepositoryProvider);
+    final now = DateTime(2026, 5, 25);
+    await repository.saveSource(
+      MonitorSource(
+        id: 'source-1',
+        schoolName: '东南大学',
+        sourceName: '硕士招生',
+        url: 'https://yzb.seu.edu.cn',
+        sourceType: MonitorSourceType.webPage,
+        keywords: const ['2026年', '硕士研究生'],
+        isEnabled: true,
+        lastCheckedAt: null,
+        lastStatus: null,
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+    await repository.saveHit(
+      MonitorHit(
+        id: 'hit-1',
+        sourceId: 'source-1',
+        title: '东南大学2026年硕士研究生全国统考拟录取名单公示',
+        link: 'https://yzb.seu.edu.cn/2026/notice.htm',
+        summary: '拟录取名单公示',
+        matchedKeywords: const ['2026年', '硕士研究生'],
+        publishedAt: now,
+        discoveredAt: now,
+        contentFingerprint: 'source-1|notice',
+        notificationSentAt: null,
+        createdAt: now,
+      ),
+    );
+    container.read(monitorSourceListProvider.notifier).refresh();
+    container.read(monitorHitListProvider.notifier).refresh();
+    await tester.pump();
+
+    expect(find.text('东南大学2026年硕士研究生全国统考拟录取名单公示'), findsOneWidget);
+    expect(find.textContaining('命中关键词：2026年、硕士研究生'), findsOneWidget);
+    expect(find.text('拟录取名单公示'), findsOneWidget);
+    expect(find.text('打开原文'), findsOneWidget);
+
+    await tester.tap(find.text('打开原文'));
+    await tester.pump();
+
+    expect(opener.opened, ['https://yzb.seu.edu.cn/2026/notice.htm']);
+  });
 }
 
 Widget _buildApp(
   String initialLocation, {
   MonitorCandidateFetcher? fetcher,
+  MonitorLinkOpener? opener,
 }) {
   final monitorRepository = MonitorRepository(null);
   final router = GoRouter(
@@ -90,6 +149,12 @@ Widget _buildApp(
     routes: [
       GoRoute(path: '/', builder: (_, __) => const HomePage()),
       GoRoute(path: '/monitor', builder: (_, __) => const MonitorListPage()),
+      GoRoute(
+        path: '/monitor/:id/hits',
+        builder: (_, state) => MonitorHitsPage(
+          sourceId: state.pathParameters['id']!,
+        ),
+      ),
       GoRoute(
         path: '/add',
         builder: (_, __) => const Scaffold(body: Text('Add route')),
@@ -120,6 +185,7 @@ Widget _buildApp(
           fetcher: fetcher ?? _EmptyFetcher(),
         ),
       ),
+      if (opener != null) monitorLinkOpenerProvider.overrideWithValue(opener),
     ],
     child: MaterialApp.router(routerConfig: router),
   );
@@ -143,6 +209,16 @@ class _EmptyFetcher implements MonitorCandidateFetcher {
   @override
   Future<MonitorFetchResult> fetchCandidates(MonitorSource source) async {
     return const MonitorFetchResult.success([]);
+  }
+}
+
+class _FakeLinkOpener implements MonitorLinkOpener {
+  final List<String> opened = [];
+
+  @override
+  Future<bool> open(String url) async {
+    opened.add(url);
+    return true;
   }
 }
 

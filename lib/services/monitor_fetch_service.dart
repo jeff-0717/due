@@ -103,23 +103,13 @@ class MonitorFetchService implements MonitorCandidateFetcher {
   }
 
   List<MonitorCandidate> _parseHtml(String body, String sourceUrl) {
-    final title = _decodeEntities(_tag(body, 'title') ?? sourceUrl);
     final withoutScripts = body
         .replaceAll(
             RegExp(r'<script\b[\s\S]*?</script>', caseSensitive: false), ' ')
         .replaceAll(
             RegExp(r'<style\b[\s\S]*?</style>', caseSensitive: false), ' ');
-    final text = _decodeEntities(_stripTags(withoutScripts));
     final linkCandidates = _parseHtmlLinks(withoutScripts, sourceUrl);
-    if (linkCandidates.isNotEmpty) return linkCandidates;
-    return [
-      MonitorCandidate(
-        title: title.trim(),
-        link: sourceUrl,
-        summary: _compact(text, maxLength: 500),
-        publishedAt: null,
-      ),
-    ];
+    return linkCandidates;
   }
 
   List<MonitorCandidate> _parseHtmlLinks(String body, String sourceUrl) {
@@ -183,6 +173,7 @@ class MonitorFetchService implements MonitorCandidateFetcher {
         .replaceAll('&lt;', '<')
         .replaceAll('&gt;', '>')
         .replaceAll('&quot;', '"')
-        .replaceAll('&#39;', "'");
+        .replaceAll('&#39;', "'")
+        .replaceAll('&nbsp;', ' ');
   }
 }

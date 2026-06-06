@@ -27,7 +27,8 @@ void main() {
     expect(result.candidates.single.summary, contains('Admission exam'));
   });
 
-  test('fetch extracts title and readable text from static html', () async {
+  test('fetch returns no candidates when static html has no notice links',
+      () async {
     final service = MonitorFetchService(
       client: _FakeHttpClient('''
 <html>
@@ -41,9 +42,7 @@ void main() {
         await service.fetchCandidates(_source(MonitorSourceType.webPage));
 
     expect(result.isSuccess, isTrue);
-    expect(result.candidates.single.title, 'Graduate admission update');
-    expect(result.candidates.single.summary, contains('exam schedule'));
-    expect(result.candidates.single.summary, isNot(contains('ignored')));
+    expect(result.candidates, isEmpty);
   });
 
   test('fetch splits static html notice links into candidates', () async {
