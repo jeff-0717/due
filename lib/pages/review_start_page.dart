@@ -14,6 +14,7 @@ class ReviewStartPage extends ConsumerStatefulWidget {
 
 class _ReviewStartPageState extends ConsumerState<ReviewStartPage> {
   late DateTime _startDate;
+  bool _isSaving = false;
 
   @override
   void initState() {
@@ -36,8 +37,20 @@ class _ReviewStartPageState extends ConsumerState<ReviewStartPage> {
   }
 
   Future<void> _save() async {
-    await ref.read(reviewStartProvider.notifier).set(_startDate);
-    if (mounted) context.pop();
+    setState(() => _isSaving = true);
+    try {
+      await ref.read(reviewStartProvider.notifier).set(_startDate);
+      if (!mounted) return;
+      if (context.canPop()) {
+        context.pop();
+      } else {
+        context.go('/');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isSaving = false);
+      }
+    }
   }
 
   @override
@@ -90,8 +103,8 @@ class _ReviewStartPageState extends ConsumerState<ReviewStartPage> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _save,
-                child: const Text('Save'),
+                onPressed: _isSaving ? null : _save,
+                child: Text(_isSaving ? 'Saving...' : 'Save'),
               ),
             ),
             const SizedBox(height: 32),

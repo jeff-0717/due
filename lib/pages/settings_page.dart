@@ -6,6 +6,7 @@ import '../providers/hive_provider.dart';
 import '../providers/review_start_provider.dart';
 import '../providers/widget_config_provider.dart';
 import '../theme/app_tokens.dart';
+import '../utils/app_date_utils.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
@@ -26,7 +27,7 @@ class SettingsPage extends ConsumerWidget {
             icon: Icons.calendar_month_outlined,
             title: 'Review Start Date',
             subtitle: reviewStart != null
-                ? '${reviewStart.startDate.year}/${reviewStart.startDate.month}/${reviewStart.startDate.day}'
+                ? AppDateUtils.formatDate(reviewStart.startDate)
                 : 'Not set',
             onTap: () => context.push('/review-start'),
           ),
@@ -105,7 +106,7 @@ class SettingsPage extends ConsumerWidget {
             ? Text(subtitle,
                 style: TextStyle(
                   color: isDestructive
-                      ? Colors.red.withOpacity(0.7)
+                      ? Colors.red.withValues(alpha: 0.7)
                       : AppTokens.textSecondary,
                 ))
             : null,
