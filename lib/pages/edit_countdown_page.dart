@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../models/countdown.dart';
 import '../providers/countdown_provider.dart';
 import '../theme/app_tokens.dart';
 import '../utils/app_date_utils.dart';
@@ -22,6 +21,9 @@ class _EditCountdownPageState extends ConsumerState<EditCountdownPage> {
   String _repeatType = 'once';
   String _color = ColorPickerRow.colors.first;
   String _icon = IconPickerRow.icons.first;
+  String? _titleError;
+  bool _isSaving = false;
+  bool _notFound = false;
 
   @override
   void initState() {
@@ -45,7 +47,10 @@ class _EditCountdownPageState extends ConsumerState<EditCountdownPage> {
         _repeatType = item.repeatType.name;
         _color = item.color;
         _icon = item.icon;
+        _notFound = false;
       });
+    } else {
+      setState(() => _notFound = true);
     }
   }
 
@@ -62,16 +67,40 @@ class _EditCountdownPageState extends ConsumerState<EditCountdownPage> {
   }
 
   Future<void> _save() async {
-    if (_titleController.text.trim().isEmpty) return;
-    await ref.read(countdownListProvider.notifier).update(
-          id: widget.id,
-          title: _titleController.text.trim(),
-          targetDate: _targetDate,
-          repeatType: _repeatType,
-          color: _color,
-          icon: _icon,
-        );
-    if (mounted) context.pop();
+    final title = _titleController.text.trim();
+    if (title.isEmpty) {
+      setState(() => _titleError = 'Title is required');
+      return;
+    }
+
+    setState(() {
+      _isSaving = true;
+      _titleError = null;
+    });
+
+    try {
+      await ref.read(countdownListProvider.notifier).update(
+            id: widget.id,
+            title: title,
+            targetDate: _targetDate,
+            repeatType: _repeatType,
+            color: _color,
+            icon: _icon,
+          );
+      if (mounted) _goBack();
+    } finally {
+      if (mounted) {
+        setState(() => _isSaving = false);
+      }
+    }
+  }
+
+  void _goBack() {
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go('/');
+    }
   }
 
   Future<void> _delete() async {
@@ -93,7 +122,7 @@ class _EditCountdownPageState extends ConsumerState<EditCountdownPage> {
     );
     if (confirm == true) {
       await ref.read(countdownListProvider.notifier).delete(widget.id);
-      if (mounted) context.pop();
+      if (mounted) _goBack();
     }
   }
 
@@ -104,116 +133,152 @@ class _EditCountdownPageState extends ConsumerState<EditCountdownPage> {
       appBar: AppBar(
         title: const Text('Edit Countdown'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.delete_outline, color: Colors.red),
-            onPressed: _delete,
-          ),
+          if (!_notFound)
+            IconButton(
+              icon: const Icon(Icons.delete_outline, color: Colors.red),
+              onPressed: _delete,
+            ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppTokens.spacing),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Title',
-                hintText: 'e.g. Final Exam',
-              ),
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Target Date',
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: AppTokens.textSecondary,
-              ),
-            ),
-            const SizedBox(height: 8),
-            InkWell(
-              onTap: _pickDate,
-              child: Container(
-                padding: const EdgeInsets.all(AppTokens.spacing),
-                decoration: BoxDecoration(
-                  color: AppTokens.card,
-                  borderRadius: BorderRadius.circular(AppTokens.radius),
-                  border: Border.all(color: AppTokens.border),
-                ),
-                child: Row(
+      body: _notFound
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(AppTokens.spacing * 2),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.calendar_today,
-                        size: 20, color: AppTokens.textSecondary),
-                    const SizedBox(width: 12),
-                    Text(
-                      AppDateUtils.formatDate(_targetDate),
-                      style: const TextStyle(
+                    const Icon(
+                      Icons.event_busy_outlined,
+                      size: 48,
+                      color: AppTokens.textSecondary,
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Countdown not found',
+                      style: TextStyle(
                         fontSize: AppTokens.fontSizeBody,
-                        color: AppTokens.textPrimary,
+                        color: AppTokens.textSecondary,
                       ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextButton(
+                      onPressed: _goBack,
+                      child: const Text('Back to home'),
                     ),
                   ],
                 ),
               ),
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Repeat',
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: AppTokens.textSecondary,
+            )
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(AppTokens.spacing),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextField(
+                    controller: _titleController,
+                    onChanged: (_) {
+                      if (_titleError != null) {
+                        setState(() => _titleError = null);
+                      }
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Title',
+                      hintText: 'e.g. Final Exam',
+                    ).copyWith(errorText: _titleError),
+                  ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'Target Date',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: AppTokens.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  InkWell(
+                    onTap: _pickDate,
+                    child: Container(
+                      padding: const EdgeInsets.all(AppTokens.spacing),
+                      decoration: BoxDecoration(
+                        color: AppTokens.card,
+                        borderRadius: BorderRadius.circular(AppTokens.radius),
+                        border: Border.all(color: AppTokens.border),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.calendar_today,
+                              size: 20, color: AppTokens.textSecondary),
+                          const SizedBox(width: 12),
+                          Text(
+                            AppDateUtils.formatDate(_targetDate),
+                            style: const TextStyle(
+                              fontSize: AppTokens.fontSizeBody,
+                              color: AppTokens.textPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'Repeat',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: AppTokens.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  SegmentedButton<String>(
+                    segments: const [
+                      ButtonSegment(value: 'once', label: Text('Once')),
+                      ButtonSegment(value: 'yearly', label: Text('Yearly')),
+                    ],
+                    selected: {_repeatType},
+                    onSelectionChanged: (v) =>
+                        setState(() => _repeatType = v.first),
+                  ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'Color',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: AppTokens.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  ColorPickerRow(
+                    selectedColor: _color,
+                    onChanged: (c) => setState(() => _color = c),
+                  ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'Icon',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: AppTokens.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  IconPickerRow(
+                    selectedIcon: _icon,
+                    onChanged: (i) => setState(() => _icon = i),
+                  ),
+                  const SizedBox(height: 32),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _isSaving ? null : _save,
+                      child: Text(_isSaving ? 'Saving...' : 'Save'),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 8),
-            SegmentedButton<String>(
-              segments: const [
-                ButtonSegment(value: 'once', label: Text('Once')),
-                ButtonSegment(value: 'yearly', label: Text('Yearly')),
-              ],
-              selected: {_repeatType},
-              onSelectionChanged: (v) => setState(() => _repeatType = v.first),
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Color',
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: AppTokens.textSecondary,
-              ),
-            ),
-            const SizedBox(height: 8),
-            ColorPickerRow(
-              selectedColor: _color,
-              onChanged: (c) => setState(() => _color = c),
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Icon',
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: AppTokens.textSecondary,
-              ),
-            ),
-            const SizedBox(height: 8),
-            IconPickerRow(
-              selectedIcon: _icon,
-              onChanged: (i) => setState(() => _icon = i),
-            ),
-            const SizedBox(height: 32),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _save,
-                child: const Text('Save'),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
