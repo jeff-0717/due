@@ -6,18 +6,18 @@ class IconPickerRow extends StatelessWidget {
   final ValueChanged<String> onChanged;
 
   static const icons = [
-    '📝',
-    '📚',
-    '🎓',
-    '🏆',
-    '💼',
-    '🎯',
-    '⭐',
-    '🔥',
-    '💪',
-    '⏰',
-    '📅',
-    '✅',
+    'E',
+    'B',
+    'T',
+    'G',
+    'H',
+    'C',
+    'S',
+    'F',
+    'M',
+    'D',
+    'P',
+    'W',
   ];
 
   const IconPickerRow({
@@ -40,7 +40,7 @@ class IconPickerRow extends StatelessWidget {
             height: 42,
             decoration: BoxDecoration(
               color: isSelected
-                  ? AppTokens.primary.withOpacity(0.1)
+                  ? AppTokens.primary.withValues(alpha: 0.1)
                   : AppTokens.background,
               borderRadius: BorderRadius.circular(10),
               border: isSelected
@@ -48,7 +48,7 @@ class IconPickerRow extends StatelessWidget {
                   : Border.all(color: AppTokens.border),
             ),
             child: Center(
-              child: Text(icon, style: const TextStyle(fontSize: 22)),
+              child: Text(icon, style: const TextStyle(fontSize: 18)),
             ),
           ),
         );

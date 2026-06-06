@@ -20,6 +20,8 @@ class _AddCountdownPageState extends ConsumerState<AddCountdownPage> {
   String _repeatType = 'once';
   String _color = ColorPickerRow.colors.first;
   String _icon = IconPickerRow.icons.first;
+  String? _titleError;
+  bool _isSaving = false;
 
   @override
   void initState() {
@@ -46,15 +48,36 @@ class _AddCountdownPageState extends ConsumerState<AddCountdownPage> {
   }
 
   Future<void> _save() async {
-    if (_titleController.text.trim().isEmpty) return;
-    await ref.read(countdownListProvider.notifier).add(
-          title: _titleController.text.trim(),
-          targetDate: _targetDate,
-          repeatType: _repeatType,
-          color: _color,
-          icon: _icon,
-        );
-    if (mounted) context.pop();
+    final title = _titleController.text.trim();
+    if (title.isEmpty) {
+      setState(() => _titleError = 'Title is required');
+      return;
+    }
+
+    setState(() {
+      _isSaving = true;
+      _titleError = null;
+    });
+
+    try {
+      await ref.read(countdownListProvider.notifier).add(
+            title: title,
+            targetDate: _targetDate,
+            repeatType: _repeatType,
+            color: _color,
+            icon: _icon,
+          );
+      if (!mounted) return;
+      if (context.canPop()) {
+        context.pop();
+      } else {
+        context.go('/');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isSaving = false);
+      }
+    }
   }
 
   @override
@@ -71,10 +94,15 @@ class _AddCountdownPageState extends ConsumerState<AddCountdownPage> {
           children: [
             TextField(
               controller: _titleController,
+              onChanged: (_) {
+                if (_titleError != null) {
+                  setState(() => _titleError = null);
+                }
+              },
               decoration: const InputDecoration(
                 labelText: 'Title',
                 hintText: 'e.g. Final Exam',
-              ),
+              ).copyWith(errorText: _titleError),
             ),
             const SizedBox(height: 24),
             const Text(
@@ -161,8 +189,8 @@ class _AddCountdownPageState extends ConsumerState<AddCountdownPage> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _save,
-                child: const Text('Save'),
+                onPressed: _isSaving ? null : _save,
+                child: Text(_isSaving ? 'Saving...' : 'Save'),
               ),
             ),
           ],
