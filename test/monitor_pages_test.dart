@@ -81,6 +81,34 @@ void main() {
     expect(find.textContaining('检查失败'), findsWidgets);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('monitor list deletes source after confirmation', (tester) async {
+    await tester.pumpWidget(_buildApp('/monitor'));
+
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(MonitorListPage)),
+    );
+    await container.read(monitorSourceListProvider.notifier).add(
+          schoolName: '东南大学',
+          sourceName: '硕士招生',
+          url: 'https://yzb.seu.edu.cn',
+          sourceType: MonitorSourceType.webPage,
+          keywords: const ['2026年'],
+          isEnabled: true,
+        );
+    await tester.pump();
+
+    expect(find.text('东南大学'), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.delete_outline));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('删除'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('东南大学'), findsNothing);
+    expect(find.text('暂无监控源'), findsOneWidget);
+  });
+
   testWidgets('monitor hits show readable notice card and open original link',
       (tester) async {
     final opener = _FakeLinkOpener();
@@ -135,6 +163,79 @@ void main() {
     await tester.pump();
 
     expect(opener.opened, ['https://yzb.seu.edu.cn/2026/notice.htm']);
+  });
+
+  testWidgets('monitor hits filter by title summary and matched keywords',
+      (tester) async {
+    await tester.pumpWidget(_buildApp('/monitor/source-1/hits'));
+
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(MonitorHitsPage)),
+    );
+    final repository = container.read(monitorRepositoryProvider);
+    final now = DateTime(2026, 5, 25);
+    await repository.saveSource(
+      MonitorSource(
+        id: 'source-1',
+        schoolName: '东南大学',
+        sourceName: '硕士招生',
+        url: 'https://yzb.seu.edu.cn',
+        sourceType: MonitorSourceType.webPage,
+        keywords: const ['复试', '拟录取'],
+        isEnabled: true,
+        lastCheckedAt: null,
+        lastStatus: null,
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+    await repository.saveHit(
+      MonitorHit(
+        id: 'hit-1',
+        sourceId: 'source-1',
+        title: '东南大学2026年硕士研究生复试须知',
+        link: 'https://yzb.seu.edu.cn/2026/fushi.htm',
+        summary: '复试安排',
+        matchedKeywords: const ['复试'],
+        publishedAt: now,
+        discoveredAt: now,
+        contentFingerprint: 'source-1|fushi',
+        notificationSentAt: null,
+        createdAt: now,
+      ),
+    );
+    await repository.saveHit(
+      MonitorHit(
+        id: 'hit-2',
+        sourceId: 'source-1',
+        title: '东南大学2026年拟录取名单公示',
+        link: 'https://yzb.seu.edu.cn/2026/luqu.htm',
+        summary: '名单公示',
+        matchedKeywords: const ['拟录取'],
+        publishedAt: now,
+        discoveredAt: now,
+        contentFingerprint: 'source-1|luqu',
+        notificationSentAt: null,
+        createdAt: now,
+      ),
+    );
+    container.read(monitorSourceListProvider.notifier).refresh();
+    container.read(monitorHitListProvider.notifier).refresh();
+    await tester.pump();
+
+    expect(find.text('东南大学2026年硕士研究生复试须知'), findsOneWidget);
+    expect(find.text('东南大学2026年拟录取名单公示'), findsOneWidget);
+
+    await tester.enterText(find.byType(TextField), '拟录取');
+    await tester.pump();
+
+    expect(find.text('东南大学2026年硕士研究生复试须知'), findsNothing);
+    expect(find.text('东南大学2026年拟录取名单公示'), findsOneWidget);
+
+    await tester.enterText(find.byType(TextField), '夏令营');
+    await tester.pump();
+
+    expect(find.text('暂无匹配记录'), findsOneWidget);
   });
 }
 

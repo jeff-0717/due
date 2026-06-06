@@ -48,6 +48,24 @@ void main() {
     final laterTop = tester.getTopLeft(find.text('Later Exam')).dy;
     expect(soonTop, lessThan(laterTop));
   });
+
+  testWidgets('home shows review days even when countdown list is empty',
+      (tester) async {
+    final now = DateTime.now();
+    final reviewStart = ReviewStart(
+      id: 'default',
+      startDate: now.subtract(const Duration(days: 2)),
+      createdAt: now,
+      updatedAt: now,
+    );
+
+    await tester.pumpWidget(
+      _buildHome(countdowns: const [], reviewStart: reviewStart),
+    );
+
+    expect(find.textContaining('已复习 3 天'), findsOneWidget);
+    expect(find.text('暂无倒计时'), findsOneWidget);
+  });
 }
 
 Widget _buildHome({

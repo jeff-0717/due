@@ -49,7 +49,7 @@ class MonitorListPage extends ConsumerWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     trailing: SizedBox(
-                      width: 144,
+                      width: 192,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         mainAxisSize: MainAxisSize.min,
@@ -60,10 +60,12 @@ class MonitorListPage extends ConsumerWidget {
                             onPressed: source.isEnabled
                                 ? () async {
                                     final result = await ref
-                                        .read(monitorCheckStateProvider.notifier)
+                                        .read(
+                                            monitorCheckStateProvider.notifier)
                                         .check(source.id);
                                     if (context.mounted) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
                                         SnackBar(
                                           content: Text(_resultText(result)),
                                         ),
@@ -84,6 +86,15 @@ class MonitorListPage extends ConsumerWidget {
                             onPressed: () =>
                                 context.push('/monitor/edit/${source.id}'),
                           ),
+                          IconButton(
+                            tooltip: '删除',
+                            icon: const Icon(Icons.delete_outline),
+                            onPressed: () => _confirmDelete(
+                              context,
+                              ref,
+                              source,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -99,9 +110,8 @@ class MonitorListPage extends ConsumerWidget {
   }
 
   String _subtitle(MonitorSource source, MonitorCheckResult? state) {
-    final lastChecked = source.lastCheckedAt == null
-        ? '尚未检查'
-        : '上次检查 ${source.lastCheckedAt}';
+    final lastChecked =
+        source.lastCheckedAt == null ? '尚未检查' : '上次检查 ${source.lastCheckedAt}';
     final keywords = source.keywords.join(', ');
     final liveState = state == null ? '' : ' - ${_statusText(state.status)}';
     return '$lastChecked - $keywords$liveState';
@@ -122,5 +132,31 @@ class MonitorListPage extends ConsumerWidget {
       case MonitorCheckStatus.failure:
         return '检查失败';
     }
+  }
+
+  Future<void> _confirmDelete(
+    BuildContext context,
+    WidgetRef ref,
+    MonitorSource source,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('删除监控源'),
+        content: Text('确定删除“${source.schoolName}”吗？'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('取消'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('删除'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    await ref.read(monitorSourceListProvider.notifier).delete(source.id);
   }
 }

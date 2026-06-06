@@ -52,6 +52,7 @@ class HomePage extends ConsumerWidget {
           ? ListView(
               children: [
                 _MonitorEntry(onTap: () => context.push('/monitor')),
+                if (reviewDays != null) _ReviewDaysCard(days: reviewDays),
                 EmptyState(
                   message: '暂无倒计时',
                   actionLabel: '添加重要日期',
@@ -130,6 +131,51 @@ class _MonitorEntry extends StatelessWidget {
           subtitle: const Text('监控 RSS 和静态公告页面'),
           trailing: const Icon(Icons.chevron_right),
           onTap: onTap,
+        ),
+      ),
+    );
+  }
+}
+
+class _ReviewDaysCard extends StatelessWidget {
+  final int days;
+
+  const _ReviewDaysCard({required this.days});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppTokens.spacing,
+        AppTokens.spacing,
+        AppTokens.spacing,
+        0,
+      ),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(AppTokens.spacing),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                '复习进度',
+                style: TextStyle(
+                  fontSize: AppTokens.fontSizeSmall,
+                  color: AppTokens.textSecondary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '已复习 $days 天',
+                style: const TextStyle(
+                  fontSize: AppTokens.fontSizeBody,
+                  color: AppTokens.textPrimary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

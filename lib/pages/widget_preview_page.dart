@@ -101,7 +101,11 @@ class WidgetPreviewPage extends ConsumerWidget {
                         await sync.syncCountdown(selected);
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('已同步到桌面组件')),
+                            const SnackBar(
+                              content: Text(
+                                '已同步，请回到桌面长按空白处添加 Due 倒计时组件',
+                              ),
+                            ),
                           );
                         }
                       },
