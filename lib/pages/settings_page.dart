@@ -82,6 +82,11 @@ class SettingsPage extends ConsumerWidget {
                 ref.invalidate(countdownListProvider);
                 ref.invalidate(reviewStartProvider);
                 ref.invalidate(widgetConfigProvider);
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('All data cleared')),
+                  );
+                }
               }
             },
           ),
