@@ -17,7 +17,8 @@ void main() {
 '''),
     );
 
-    final result = await service.fetchCandidates(_source(MonitorSourceType.rss));
+    final result =
+        await service.fetchCandidates(_source(MonitorSourceType.rss));
 
     expect(result.isSuccess, isTrue);
     expect(result.candidates, hasLength(1));
@@ -66,7 +67,8 @@ void main() {
     expect(result.isSuccess, isTrue);
     expect(result.candidates, hasLength(2));
     expect(result.candidates.first.title, contains('复试须知'));
-    expect(result.candidates.first.link, 'https://example.edu/2026/notice-a.htm');
+    expect(
+        result.candidates.first.link, 'https://example.edu/2026/notice-a.htm');
     expect(result.candidates.last.title, contains('调剂信息'));
   });
 
@@ -75,10 +77,11 @@ void main() {
       client: _FakeHttpClient('Missing', statusCode: 404),
     );
 
-    final result = await service.fetchCandidates(_source(MonitorSourceType.rss));
+    final result =
+        await service.fetchCandidates(_source(MonitorSourceType.rss));
 
     expect(result.isSuccess, isFalse);
-    expect(result.errorMessage, contains('HTTP 404'));
+    expect(result.errorMessage, contains('状态码 404'));
   });
 }
 

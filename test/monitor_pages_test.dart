@@ -149,6 +149,6 @@ class _EmptyFetcher implements MonitorCandidateFetcher {
 class _FailingFetcher implements MonitorCandidateFetcher {
   @override
   Future<MonitorFetchResult> fetchCandidates(MonitorSource source) async {
-    return const MonitorFetchResult.failure('network unavailable');
+    return const MonitorFetchResult.failure('请求失败，请检查网址或网络');
   }
 }

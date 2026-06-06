@@ -71,14 +71,14 @@ class MonitorFetchService implements MonitorCandidateFetcher {
     try {
       final response = await _client.get(Uri.parse(source.url));
       if (response.statusCode < 200 || response.statusCode >= 300) {
-        return MonitorFetchResult.failure('HTTP ${response.statusCode}');
+        return MonitorFetchResult.failure('请求失败，状态码 ${response.statusCode}');
       }
       if (source.sourceType == MonitorSourceType.rss) {
         return MonitorFetchResult.success(_parseRss(response.body, source.url));
       }
       return MonitorFetchResult.success(_parseHtml(response.body, source.url));
-    } catch (error) {
-      return MonitorFetchResult.failure(error.toString());
+    } catch (_) {
+      return const MonitorFetchResult.failure('请求失败，请检查网址或网络');
     }
   }
 
@@ -90,7 +90,8 @@ class MonitorFetchService implements MonitorCandidateFetcher {
     return items.map((item) {
       final title = _decodeEntities(_tag(item, 'title') ?? '未命名公告');
       final link = _decodeEntities(_tag(item, 'link') ?? sourceUrl);
-      final summary = _decodeEntities(_stripTags(_tag(item, 'description') ?? ''));
+      final summary =
+          _decodeEntities(_stripTags(_tag(item, 'description') ?? ''));
       final pubDate = _tag(item, 'pubDate');
       return MonitorCandidate(
         title: title,
@@ -104,8 +105,10 @@ class MonitorFetchService implements MonitorCandidateFetcher {
   List<MonitorCandidate> _parseHtml(String body, String sourceUrl) {
     final title = _decodeEntities(_tag(body, 'title') ?? sourceUrl);
     final withoutScripts = body
-        .replaceAll(RegExp(r'<script\b[\s\S]*?</script>', caseSensitive: false), ' ')
-        .replaceAll(RegExp(r'<style\b[\s\S]*?</style>', caseSensitive: false), ' ');
+        .replaceAll(
+            RegExp(r'<script\b[\s\S]*?</script>', caseSensitive: false), ' ')
+        .replaceAll(
+            RegExp(r'<style\b[\s\S]*?</style>', caseSensitive: false), ' ');
     final text = _decodeEntities(_stripTags(withoutScripts));
     final linkCandidates = _parseHtmlLinks(withoutScripts, sourceUrl);
     if (linkCandidates.isNotEmpty) return linkCandidates;
@@ -120,9 +123,8 @@ class MonitorFetchService implements MonitorCandidateFetcher {
   }
 
   List<MonitorCandidate> _parseHtmlLinks(String body, String sourceUrl) {
-    final matches =
-        RegExp(r'<a\b([^>]*)>([\s\S]*?)</a>', caseSensitive: false)
-            .allMatches(body);
+    final matches = RegExp(r'<a\b([^>]*)>([\s\S]*?)</a>', caseSensitive: false)
+        .allMatches(body);
     final candidates = <MonitorCandidate>[];
     final seen = <String>{};
     for (final match in matches) {
