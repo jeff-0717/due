@@ -17,7 +17,7 @@ class DueWidgetProvider : HomeWidgetProvider() {
     ) {
         appWidgetIds.forEach { widgetId ->
             val title = widgetData.getString("title", null) ?: "Due"
-            val targetDate = widgetData.getString("targetDate", null) ?: "Select a countdown"
+            val targetDate = widgetData.getString("targetDate", null) ?: "请选择倒计时"
             val icon = widgetData.getString("icon", null) ?: "D"
             val daysLeft = widgetData.getInt("daysLeft", 0)
             val accentColor = parseColor(widgetData.getString("color", null))

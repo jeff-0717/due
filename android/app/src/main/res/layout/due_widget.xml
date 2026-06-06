@@ -51,7 +51,7 @@
             android:ellipsize="end"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:text="Select a countdown"
+            android:text="请选择倒计时"
             android:textColor="#64748B"
             android:textSize="12sp" />
     </LinearLayout>
@@ -76,7 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
-            android:text="days"
+            android:text="天"
             android:textColor="#64748B"
             android:textSize="12sp" />
     </LinearLayout>
