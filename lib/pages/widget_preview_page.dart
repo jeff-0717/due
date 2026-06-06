@@ -20,7 +20,7 @@ class WidgetPreviewPage extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppTokens.background,
       appBar: AppBar(
-        title: const Text('Widget Preview'),
+        title: const Text('桌面组件预览'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(AppTokens.spacing),
@@ -28,7 +28,7 @@ class WidgetPreviewPage extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Preview',
+              '预览',
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -39,7 +39,7 @@ class WidgetPreviewPage extends ConsumerWidget {
             WidgetPreviewCard(countdown: selected),
             const SizedBox(height: 24),
             const Text(
-              'Select Countdown',
+              '选择倒计时',
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -51,7 +51,7 @@ class WidgetPreviewPage extends ConsumerWidget {
               child: countdowns.isEmpty
                   ? const Center(
                       child: Text(
-                        'No countdowns available',
+                        '暂无可用倒计时',
                         style: TextStyle(color: AppTokens.textSecondary),
                       ),
                     )
@@ -101,11 +101,11 @@ class WidgetPreviewPage extends ConsumerWidget {
                         await sync.syncCountdown(selected);
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Synced to widget')),
+                            const SnackBar(content: Text('已同步到桌面组件')),
                           );
                         }
                       },
-                child: const Text('Sync to Widget'),
+                child: const Text('同步到桌面组件'),
               ),
             ),
             const SizedBox(height: 16),

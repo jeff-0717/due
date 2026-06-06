@@ -58,7 +58,7 @@ class _ReviewStartPageState extends ConsumerState<ReviewStartPage> {
     return Scaffold(
       backgroundColor: AppTokens.background,
       appBar: AppBar(
-        title: const Text('Review Start Date'),
+        title: const Text('复习开始日期'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(AppTokens.spacing),
@@ -66,7 +66,7 @@ class _ReviewStartPageState extends ConsumerState<ReviewStartPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'When did you start reviewing?',
+              '你从哪一天开始复习？',
               style: TextStyle(
                 fontSize: AppTokens.fontSizeBody,
                 color: AppTokens.textSecondary,
@@ -104,7 +104,7 @@ class _ReviewStartPageState extends ConsumerState<ReviewStartPage> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _isSaving ? null : _save,
-                child: Text(_isSaving ? 'Saving...' : 'Save'),
+                child: Text(_isSaving ? '保存中...' : '保存'),
               ),
             ),
             const SizedBox(height: 32),

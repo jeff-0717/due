@@ -19,7 +19,7 @@ void main() {
       _buildApp(repository, initialLocation: '/review-start'),
     );
 
-    await tester.tap(find.text('Save'));
+    await tester.tap(find.text('保存'));
     await tester.pumpAndSettle();
 
     expect(repository.item, isNotNull);
@@ -32,11 +32,11 @@ void main() {
     await tester
         .pumpWidget(_buildApp(repository, initialLocation: '/settings'));
 
-    expect(find.text('Not set'), findsOneWidget);
+    expect(find.text('未设置'), findsOneWidget);
 
-    await tester.tap(find.text('Review Start Date'));
+    await tester.tap(find.text('复习开始日期'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Save'));
+    await tester.tap(find.text('保存'));
     await tester.pumpAndSettle();
 
     expect(find.text('Not set'), findsNothing);

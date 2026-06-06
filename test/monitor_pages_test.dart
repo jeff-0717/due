@@ -20,7 +20,7 @@ void main() {
       (tester) async {
     await tester.pumpWidget(_buildApp('/'));
 
-    expect(find.text('School Monitoring'), findsOneWidget);
+    expect(find.text('院校信息监控'), findsOneWidget);
     expect(find.byIcon(Icons.add), findsOneWidget);
   });
 
@@ -28,7 +28,7 @@ void main() {
       (tester) async {
     await tester.pumpWidget(_buildApp('/monitor'));
 
-    expect(find.text('No monitor sources yet'), findsOneWidget);
+    expect(find.text('暂无监控源'), findsOneWidget);
 
     final container = ProviderScope.containerOf(
       tester.element(find.byType(MonitorListPage)),
@@ -44,7 +44,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('North University'), findsOneWidget);
-    expect(find.textContaining('Never checked'), findsOneWidget);
+    expect(find.textContaining('尚未检查'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -75,8 +75,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('东南大学'), findsOneWidget);
-    expect(find.textContaining('failure'), findsOneWidget);
-    expect(find.textContaining('Check failed'), findsOneWidget);
+    expect(find.textContaining('检查失败'), findsWidgets);
     expect(tester.takeException(), isNull);
   });
 }

@@ -36,7 +36,7 @@ class CountdownOverview extends StatelessWidget {
       child: Column(
         children: [
           const Text(
-            'Next up',
+            '最近事项',
             style: TextStyle(
               fontSize: AppTokens.fontSizeSmall,
               fontWeight: FontWeight.w600,
@@ -63,7 +63,7 @@ class CountdownOverview extends StatelessWidget {
             ),
           ),
           const Text(
-            'days remaining',
+            '天后到期',
             style: TextStyle(
               fontSize: AppTokens.fontSizeBody,
               color: AppTokens.textSecondary,
@@ -80,7 +80,7 @@ class CountdownOverview extends StatelessWidget {
           if (reviewDays != null) ...[
             const SizedBox(height: 4),
             Text(
-              'Reviewed $reviewDays days',
+              '已复习 $reviewDays 天',
               style: const TextStyle(
                 fontSize: AppTokens.fontSizeSmall,
                 color: AppTokens.textSecondary,

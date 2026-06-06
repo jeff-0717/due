@@ -88,7 +88,7 @@ class MonitorFetchService implements MonitorCandidateFetcher {
         .map((match) => match.group(0)!)
         .toList();
     return items.map((item) {
-      final title = _decodeEntities(_tag(item, 'title') ?? 'Untitled notice');
+      final title = _decodeEntities(_tag(item, 'title') ?? '未命名公告');
       final link = _decodeEntities(_tag(item, 'link') ?? sourceUrl);
       final summary = _decodeEntities(_stripTags(_tag(item, 'description') ?? ''));
       final pubDate = _tag(item, 'pubDate');
@@ -107,6 +107,8 @@ class MonitorFetchService implements MonitorCandidateFetcher {
         .replaceAll(RegExp(r'<script\b[\s\S]*?</script>', caseSensitive: false), ' ')
         .replaceAll(RegExp(r'<style\b[\s\S]*?</style>', caseSensitive: false), ' ');
     final text = _decodeEntities(_stripTags(withoutScripts));
+    final linkCandidates = _parseHtmlLinks(withoutScripts, sourceUrl);
+    if (linkCandidates.isNotEmpty) return linkCandidates;
     return [
       MonitorCandidate(
         title: title.trim(),
@@ -115,6 +117,46 @@ class MonitorFetchService implements MonitorCandidateFetcher {
         publishedAt: null,
       ),
     ];
+  }
+
+  List<MonitorCandidate> _parseHtmlLinks(String body, String sourceUrl) {
+    final matches =
+        RegExp(r'<a\b([^>]*)>([\s\S]*?)</a>', caseSensitive: false)
+            .allMatches(body);
+    final candidates = <MonitorCandidate>[];
+    final seen = <String>{};
+    for (final match in matches) {
+      final attributes = match.group(1) ?? '';
+      final hrefMatch = RegExp(
+        r'''href\s*=\s*["']([^"']+)["']''',
+        caseSensitive: false,
+      ).firstMatch(attributes);
+      final rawHref = _decodeEntities(hrefMatch?.group(1) ?? '').trim();
+      final rawTitle = _decodeEntities(_stripTags(match.group(2) ?? '')).trim();
+      if (rawHref.isEmpty || rawTitle.isEmpty) continue;
+      if (rawHref.startsWith('#') ||
+          rawHref.toLowerCase().startsWith('javascript:')) {
+        continue;
+      }
+      final link = _resolveLink(sourceUrl, rawHref);
+      final key = '$link|$rawTitle';
+      if (!seen.add(key)) continue;
+      candidates.add(
+        MonitorCandidate(
+          title: rawTitle,
+          link: link,
+          summary: rawTitle,
+          publishedAt: null,
+        ),
+      );
+    }
+    return candidates;
+  }
+
+  String _resolveLink(String sourceUrl, String href) {
+    final base = Uri.parse(sourceUrl);
+    final resolved = base.resolve(href);
+    return resolved.toString();
   }
 
   String? _tag(String body, String tag) {

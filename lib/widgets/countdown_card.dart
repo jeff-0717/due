@@ -83,7 +83,7 @@ class CountdownCard extends StatelessWidget {
                     ),
                   ),
                   const Text(
-                    'days',
+                    '天',
                     style: TextStyle(
                       fontSize: 12,
                       color: AppTokens.textSecondary,

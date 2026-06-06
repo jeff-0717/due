@@ -13,10 +13,10 @@ void main() {
     final repository = _FakeCountdownRepository();
     await tester.pumpWidget(_buildAddPage(repository));
 
-    await tester.tap(find.text('Save'));
+    await tester.tap(find.text('保存'));
     await tester.pump();
 
-    expect(find.text('Title is required'), findsOneWidget);
+    expect(find.text('请输入标题'), findsOneWidget);
     expect(repository.created, isEmpty);
   });
 
@@ -26,9 +26,9 @@ void main() {
     await tester.pumpWidget(_buildAddPage(repository));
 
     await tester.enterText(find.byType(TextField), 'Final Exam');
-    await tester.tap(find.text('Yearly'));
+    await tester.tap(find.text('每年'));
     await tester.pump();
-    await tester.tap(find.text('Save'));
+    await tester.tap(find.text('保存'));
     await tester.pumpAndSettle();
 
     expect(repository.created.single.title, 'Final Exam');

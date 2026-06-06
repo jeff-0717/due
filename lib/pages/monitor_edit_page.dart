@@ -53,7 +53,7 @@ class _MonitorEditPageState extends ConsumerState<MonitorEditPage> {
     return Scaffold(
       backgroundColor: AppTokens.background,
       appBar: AppBar(
-        title: Text(widget.id == null ? 'Add Monitor Source' : 'Edit Monitor Source'),
+        title: Text(widget.id == null ? '添加监控源' : '编辑监控源'),
       ),
       body: Form(
         key: _formKey,
@@ -62,12 +62,12 @@ class _MonitorEditPageState extends ConsumerState<MonitorEditPage> {
           children: [
             TextFormField(
               controller: _schoolController,
-              decoration: const InputDecoration(labelText: 'School name'),
+              decoration: const InputDecoration(labelText: '学校名称'),
               validator: _required,
             ),
             TextFormField(
               controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Source name'),
+              decoration: const InputDecoration(labelText: '信息源名称'),
             ),
             TextFormField(
               controller: _urlController,
@@ -76,16 +76,16 @@ class _MonitorEditPageState extends ConsumerState<MonitorEditPage> {
               validator: (value) {
                 final uri = Uri.tryParse(value ?? '');
                 if (uri == null || !uri.hasScheme || uri.host.isEmpty) {
-                  return 'Enter a valid URL';
+                  return '请输入有效网址';
                 }
                 return null;
               },
             ),
             TextFormField(
               controller: _keywordsController,
-              decoration: const InputDecoration(labelText: 'Keywords'),
+              decoration: const InputDecoration(labelText: '关键词'),
               validator: (value) =>
-                  _keywords(value).isEmpty ? 'Enter at least one keyword' : null,
+                  _keywords(value).isEmpty ? '请至少输入一个关键词' : null,
             ),
             const SizedBox(height: 12),
             SegmentedButton<MonitorSourceType>(
@@ -93,7 +93,7 @@ class _MonitorEditPageState extends ConsumerState<MonitorEditPage> {
                 ButtonSegment(value: MonitorSourceType.rss, label: Text('RSS')),
                 ButtonSegment(
                   value: MonitorSourceType.webPage,
-                  label: Text('Web Page'),
+                  label: Text('网页'),
                 ),
               ],
               selected: {_sourceType},
@@ -102,14 +102,14 @@ class _MonitorEditPageState extends ConsumerState<MonitorEditPage> {
               },
             ),
             SwitchListTile(
-              title: const Text('Enabled'),
+              title: const Text('启用监控'),
               value: _isEnabled,
               onChanged: (value) => setState(() => _isEnabled = value),
             ),
             const SizedBox(height: 16),
             FilledButton.icon(
               icon: const Icon(Icons.save_outlined),
-              label: const Text('Save'),
+              label: const Text('保存'),
               onPressed: _save,
             ),
           ],
@@ -119,7 +119,7 @@ class _MonitorEditPageState extends ConsumerState<MonitorEditPage> {
   }
 
   String? _required(String? value) {
-    return value == null || value.trim().isEmpty ? 'Required' : null;
+    return value == null || value.trim().isEmpty ? '必填' : null;
   }
 
   List<String> _keywords(String? value) {

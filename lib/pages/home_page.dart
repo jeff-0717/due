@@ -38,7 +38,7 @@ class HomePage extends ConsumerWidget {
         title: const Text('Due'),
         actions: [
           IconButton(
-            tooltip: 'School Monitoring',
+            tooltip: '院校信息监控',
             icon: const Icon(Icons.travel_explore_outlined),
             onPressed: () => context.push('/monitor'),
           ),
@@ -53,8 +53,8 @@ class HomePage extends ConsumerWidget {
               children: [
                 _MonitorEntry(onTap: () => context.push('/monitor')),
                 EmptyState(
-                  message: 'No countdowns yet',
-                  actionLabel: 'Start with one important date',
+                  message: '暂无倒计时',
+                  actionLabel: '添加重要日期',
                   onAction: () => context.push('/add'),
                 ),
               ],
@@ -69,7 +69,7 @@ class HomePage extends ConsumerWidget {
                   padding: EdgeInsets.fromLTRB(
                       AppTokens.spacing, 16, AppTokens.spacing, 8),
                   child: Text(
-                    'All Countdowns',
+                    '全部倒计时',
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -85,7 +85,7 @@ class HomePage extends ConsumerWidget {
                     8,
                   ),
                   child: Text(
-                    'Sorted by next date',
+                    '按最近日期排序',
                     style: TextStyle(
                       fontSize: AppTokens.fontSizeSmall,
                       color: AppTokens.textSecondary,
@@ -126,8 +126,8 @@ class _MonitorEntry extends StatelessWidget {
       child: Card(
         child: ListTile(
           leading: const Icon(Icons.travel_explore_outlined),
-          title: const Text('School Monitoring'),
-          subtitle: const Text('Track RSS and static notice pages'),
+          title: const Text('院校信息监控'),
+          subtitle: const Text('监控 RSS 和静态公告页面'),
           trailing: const Icon(Icons.chevron_right),
           onTap: onTap,
         ),

@@ -14,8 +14,8 @@ void main() {
     await tester.pumpWidget(_buildEditPage(_FakeCountdownRepository(), 'none'));
     await tester.pump();
 
-    expect(find.text('Countdown not found'), findsOneWidget);
-    expect(find.text('Back to home'), findsOneWidget);
+    expect(find.text('未找到倒计时'), findsOneWidget);
+    expect(find.text('返回首页'), findsOneWidget);
   });
 
   testWidgets('edit page updates existing countdown and returns home',
@@ -27,9 +27,9 @@ void main() {
     expect(find.text('Original Exam'), findsOneWidget);
 
     await tester.enterText(find.byType(TextField), 'Updated Exam');
-    await tester.tap(find.text('Yearly'));
+    await tester.tap(find.text('每年'));
     await tester.pump();
-    await tester.tap(find.text('Save'));
+    await tester.tap(find.text('保存'));
     await tester.pumpAndSettle();
 
     expect(repository.items.single.title, 'Updated Exam');
@@ -45,7 +45,7 @@ void main() {
 
     await tester.tap(find.byIcon(Icons.delete_outline));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Delete').last);
+    await tester.tap(find.text('删除').last);
     await tester.pumpAndSettle();
 
     expect(repository.items, isEmpty);

@@ -45,6 +45,31 @@ void main() {
     expect(result.candidates.single.summary, isNot(contains('ignored')));
   });
 
+  test('fetch splits static html notice links into candidates', () async {
+    final service = MonitorFetchService(
+      client: _FakeHttpClient('''
+<html>
+<head><title>东南大学研究生招生网</title></head>
+<body>
+  <ul>
+    <li><a href="/2026/notice-a.htm">东南大学2026年硕士研究生复试须知</a></li>
+    <li><a href="https://yzb.seu.edu.cn/2026/tiaoji.htm">东南大学2026年硕士研究生调剂信息汇总</a></li>
+  </ul>
+</body>
+</html>
+'''),
+    );
+
+    final result =
+        await service.fetchCandidates(_source(MonitorSourceType.webPage));
+
+    expect(result.isSuccess, isTrue);
+    expect(result.candidates, hasLength(2));
+    expect(result.candidates.first.title, contains('复试须知'));
+    expect(result.candidates.first.link, 'https://example.edu/2026/notice-a.htm');
+    expect(result.candidates.last.title, contains('调剂信息'));
+  });
+
   test('fetch failure returns displayable error instead of throwing', () async {
     final service = MonitorFetchService(
       client: _FakeHttpClient('Missing', statusCode: 404),

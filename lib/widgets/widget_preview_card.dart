@@ -23,7 +23,7 @@ class WidgetPreviewCard extends StatelessWidget {
         ),
         child: const Center(
           child: Text(
-            'No countdown selected',
+            '未选择倒计时',
             style: TextStyle(color: AppTokens.textSecondary),
           ),
         ),
@@ -96,7 +96,7 @@ class WidgetPreviewCard extends StatelessWidget {
           ),
           const SizedBox(width: 4),
           const Text(
-            'days',
+            '天',
             style: TextStyle(
               fontSize: AppTokens.fontSizeSmall,
               color: AppTokens.textSecondary,

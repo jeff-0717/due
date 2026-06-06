@@ -50,7 +50,7 @@ class _AddCountdownPageState extends ConsumerState<AddCountdownPage> {
   Future<void> _save() async {
     final title = _titleController.text.trim();
     if (title.isEmpty) {
-      setState(() => _titleError = 'Title is required');
+      setState(() => _titleError = '请输入标题');
       return;
     }
 
@@ -85,7 +85,7 @@ class _AddCountdownPageState extends ConsumerState<AddCountdownPage> {
     return Scaffold(
       backgroundColor: AppTokens.background,
       appBar: AppBar(
-        title: const Text('Add Countdown'),
+        title: const Text('添加倒计时'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppTokens.spacing),
@@ -100,13 +100,13 @@ class _AddCountdownPageState extends ConsumerState<AddCountdownPage> {
                 }
               },
               decoration: const InputDecoration(
-                labelText: 'Title',
-                hintText: 'e.g. Final Exam',
+                labelText: '标题',
+                hintText: '例如：期末考试',
               ).copyWith(errorText: _titleError),
             ),
             const SizedBox(height: 24),
             const Text(
-              'Target Date',
+              '目标日期',
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -141,7 +141,7 @@ class _AddCountdownPageState extends ConsumerState<AddCountdownPage> {
             ),
             const SizedBox(height: 24),
             const Text(
-              'Repeat',
+              '重复',
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -151,15 +151,15 @@ class _AddCountdownPageState extends ConsumerState<AddCountdownPage> {
             const SizedBox(height: 8),
             SegmentedButton<String>(
               segments: const [
-                ButtonSegment(value: 'once', label: Text('Once')),
-                ButtonSegment(value: 'yearly', label: Text('Yearly')),
+                ButtonSegment(value: 'once', label: Text('一次')),
+                ButtonSegment(value: 'yearly', label: Text('每年')),
               ],
               selected: {_repeatType},
               onSelectionChanged: (v) => setState(() => _repeatType = v.first),
             ),
             const SizedBox(height: 24),
             const Text(
-              'Color',
+              '颜色',
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -173,7 +173,7 @@ class _AddCountdownPageState extends ConsumerState<AddCountdownPage> {
             ),
             const SizedBox(height: 24),
             const Text(
-              'Icon',
+              '图标',
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -190,7 +190,7 @@ class _AddCountdownPageState extends ConsumerState<AddCountdownPage> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _isSaving ? null : _save,
-                child: Text(_isSaving ? 'Saving...' : 'Save'),
+                child: Text(_isSaving ? '保存中...' : '保存'),
               ),
             ),
           ],

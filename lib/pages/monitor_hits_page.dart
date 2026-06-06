@@ -17,9 +17,9 @@ class MonitorHitsPage extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppTokens.background,
-      appBar: AppBar(title: Text(source?.schoolName ?? 'Monitor Hits')),
+      appBar: AppBar(title: Text(source?.schoolName ?? '命中记录')),
       body: hits.isEmpty
-          ? const Center(child: Text('No hits yet'))
+          ? const Center(child: Text('暂无命中记录'))
           : ListView.separated(
               padding: const EdgeInsets.all(AppTokens.spacing),
               itemCount: hits.length,
@@ -34,13 +34,13 @@ class MonitorHitsPage extends ConsumerWidget {
                     ),
                     isThreeLine: true,
                     trailing: IconButton(
-                      tooltip: 'Copy link',
+                      tooltip: '复制链接',
                       icon: const Icon(Icons.open_in_new),
                       onPressed: () async {
                         await Clipboard.setData(ClipboardData(text: hit.link));
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Link copied')),
+                            const SnackBar(content: Text('链接已复制')),
                           );
                         }
                       },

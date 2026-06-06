@@ -18,7 +18,7 @@ class MonitorListPage extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppTokens.background,
       appBar: AppBar(
-        title: const Text('School Monitoring'),
+        title: const Text('院校信息监控'),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
@@ -27,7 +27,7 @@ class MonitorListPage extends ConsumerWidget {
         ],
       ),
       body: sources.isEmpty
-          ? const Center(child: Text('No monitor sources yet'))
+          ? const Center(child: Text('暂无监控源'))
           : ListView.separated(
               padding: const EdgeInsets.all(AppTokens.spacing),
               itemCount: sources.length,
@@ -55,7 +55,7 @@ class MonitorListPage extends ConsumerWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            tooltip: 'Check now',
+                            tooltip: '立即检查',
                             icon: const Icon(Icons.refresh),
                             onPressed: source.isEnabled
                                 ? () async {
@@ -73,13 +73,13 @@ class MonitorListPage extends ConsumerWidget {
                                 : null,
                           ),
                           IconButton(
-                            tooltip: 'Hits',
+                            tooltip: '命中记录',
                             icon: const Icon(Icons.article_outlined),
                             onPressed: () =>
                                 context.push('/monitor/${source.id}/hits'),
                           ),
                           IconButton(
-                            tooltip: 'Edit',
+                            tooltip: '编辑',
                             icon: const Icon(Icons.edit_outlined),
                             onPressed: () =>
                                 context.push('/monitor/edit/${source.id}'),
@@ -100,16 +100,27 @@ class MonitorListPage extends ConsumerWidget {
 
   String _subtitle(MonitorSource source, MonitorCheckResult? state) {
     final lastChecked = source.lastCheckedAt == null
-        ? 'Never checked'
-        : 'Last checked ${source.lastCheckedAt}';
+        ? '尚未检查'
+        : '上次检查 ${source.lastCheckedAt}';
     final keywords = source.keywords.join(', ');
-    final liveState = state == null ? '' : ' - ${state.status.name}';
+    final liveState = state == null ? '' : ' - ${_statusText(state.status)}';
     return '$lastChecked - $keywords$liveState';
   }
 
   String _resultText(MonitorCheckResult result) {
-    if (result.errorMessage != null) return 'Check failed: ${result.errorMessage}';
-    if (result.newHitCount == 0) return 'No new hits';
-    return 'Found ${result.newHitCount} new hit(s)';
+    if (result.errorMessage != null) return '检查失败：${result.errorMessage}';
+    if (result.newHitCount == 0) return '没有新的命中';
+    return '发现 ${result.newHitCount} 条新命中';
+  }
+
+  String _statusText(MonitorCheckStatus status) {
+    switch (status) {
+      case MonitorCheckStatus.newHits:
+        return '有新命中';
+      case MonitorCheckStatus.noNewHits:
+        return '无新命中';
+      case MonitorCheckStatus.failure:
+        return '检查失败';
+    }
   }
 }

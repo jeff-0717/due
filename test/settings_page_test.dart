@@ -18,11 +18,11 @@ void main() {
     final fakes = _SettingsFakes();
     await tester.pumpWidget(_buildSettings(fakes));
 
-    await tester.tap(find.text('About Due'));
+    await tester.tap(find.text('关于 Due'));
     await tester.pumpAndSettle();
 
     expect(find.text('Due'), findsWidgets);
-    expect(find.text('A minimal exam countdown app.'), findsOneWidget);
+    expect(find.text('一款极简考试倒计时应用。'), findsOneWidget);
   });
 
   testWidgets('settings clears data and refreshes visible state',
@@ -32,14 +32,14 @@ void main() {
 
     expect(find.text('Not set'), findsNothing);
 
-    await tester.tap(find.text('Clear All Data'));
+    await tester.tap(find.text('清空全部数据').first);
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Clear'));
+    await tester.tap(find.text('清空').last);
     await tester.pumpAndSettle();
 
     expect(fakes.hive.clearAllCalled, isTrue);
-    expect(find.text('Not set'), findsOneWidget);
-    expect(find.text('All data cleared'), findsOneWidget);
+    expect(find.text('未设置'), findsOneWidget);
+    expect(find.text('数据已清空'), findsOneWidget);
   });
 }
 

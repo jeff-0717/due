@@ -8,8 +8,8 @@ class EmptyState extends StatelessWidget {
 
   const EmptyState({
     super.key,
-    this.message = 'No countdowns yet',
-    this.actionLabel = 'Add your first',
+    this.message = '暂无倒计时',
+    this.actionLabel = '添加第一个',
     this.onAction,
   });
 

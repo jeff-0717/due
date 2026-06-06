@@ -17,7 +17,7 @@ void main() {
       (tester) async {
     await tester.pumpWidget(_buildWidgetPreview(_WidgetPreviewFakes()));
 
-    expect(find.text('No countdowns available'), findsOneWidget);
+    expect(find.text('暂无可用倒计时'), findsOneWidget);
     expect(tester.widget<ElevatedButton>(find.byType(ElevatedButton)).enabled,
         isFalse);
   });
@@ -30,12 +30,12 @@ void main() {
 
     await tester.tap(find.text('Final Exam').last);
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Sync to Widget'));
+    await tester.tap(find.text('同步到桌面组件'));
     await tester.pumpAndSettle();
 
     expect(fakes.config.item?.countdownId, 'exam');
     expect(fakes.sync.synced.single.id, 'exam');
-    expect(find.text('Synced to widget'), findsOneWidget);
+    expect(find.text('已同步到桌面组件'), findsOneWidget);
   });
 }
 

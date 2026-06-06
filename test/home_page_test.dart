@@ -16,8 +16,8 @@ void main() {
       (tester) async {
     await tester.pumpWidget(_buildHome(countdowns: const []));
 
-    expect(find.text('No countdowns yet'), findsOneWidget);
-    expect(find.text('Start with one important date'), findsOneWidget);
+    expect(find.text('暂无倒计时'), findsOneWidget);
+    expect(find.text('添加重要日期'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.add));
     await tester.pumpAndSettle();
@@ -40,9 +40,9 @@ void main() {
 
     await tester.pumpWidget(_buildHome(countdowns: [later, soon]));
 
-    expect(find.text('Next up'), findsOneWidget);
+    expect(find.text('最近事项'), findsOneWidget);
     expect(find.text('Soon Exam'), findsWidgets);
-    expect(find.text('Sorted by next date'), findsOneWidget);
+    expect(find.text('按最近日期排序'), findsOneWidget);
 
     final soonTop = tester.getTopLeft(find.text('Soon Exam').last).dy;
     final laterTop = tester.getTopLeft(find.text('Later Exam')).dy;

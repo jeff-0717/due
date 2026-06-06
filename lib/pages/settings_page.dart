@@ -19,67 +19,67 @@ class SettingsPage extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppTokens.background,
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: const Text('设置'),
       ),
       body: ListView(
         padding: const EdgeInsets.all(AppTokens.spacing),
         children: [
           _buildItem(
             icon: Icons.calendar_month_outlined,
-            title: 'Review Start Date',
+            title: '复习开始日期',
             subtitle: reviewStart != null
                 ? AppDateUtils.formatDate(reviewStart.startDate)
-                : 'Not set',
+                : '未设置',
             onTap: () => context.push('/review-start'),
           ),
           const SizedBox(height: 8),
           _buildItem(
             icon: Icons.widgets_outlined,
-            title: 'Widget Preview',
-            subtitle: 'Configure your home screen widget',
+            title: '桌面组件预览',
+            subtitle: '配置桌面倒计时组件',
             onTap: () => context.push('/widget-preview'),
           ),
           const SizedBox(height: 8),
           _buildItem(
             icon: Icons.travel_explore_outlined,
-            title: 'School Monitoring',
-            subtitle: 'Manage notice sources and hits',
+            title: '院校信息监控',
+            subtitle: '管理公告来源和命中记录',
             onTap: () => context.push('/monitor'),
           ),
           const SizedBox(height: 8),
           _buildItem(
             icon: Icons.info_outline,
-            title: 'About Due',
-            subtitle: 'Version 1.0.0',
+            title: '关于 Due',
+            subtitle: '版本 1.0.0',
             onTap: () {
               showAboutDialog(
                 context: context,
                 applicationName: 'Due',
                 applicationVersion: '1.0.0',
-                applicationLegalese: 'A minimal exam countdown app.',
+                applicationLegalese: '一款极简考试倒计时应用。',
               );
             },
           ),
           const SizedBox(height: 8),
           _buildItem(
             icon: Icons.delete_sweep_outlined,
-            title: 'Clear All Data',
-            subtitle: 'Remove all countdowns and settings',
+            title: '清空全部数据',
+            subtitle: '删除所有倒计时和设置',
             isDestructive: true,
             onTap: () async {
               final confirm = await showDialog<bool>(
                 context: context,
                 builder: (ctx) => AlertDialog(
-                  title: const Text('Clear All Data'),
-                  content: const Text('This cannot be undone.'),
+                  title: const Text('清空全部数据'),
+                  content: const Text('此操作无法撤销。'),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(ctx, false),
-                      child: const Text('Cancel'),
+                      child: const Text('取消'),
                     ),
                     TextButton(
                       onPressed: () => Navigator.pop(ctx, true),
-                      child: const Text('Clear',
+                      child: const Text('清空',
                           style: TextStyle(color: Colors.red)),
                     ),
                   ],
@@ -94,7 +94,7 @@ class SettingsPage extends ConsumerWidget {
                 ref.invalidate(monitorHitListProvider);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('All data cleared')),
+                    const SnackBar(content: Text('数据已清空')),
                   );
                 }
               }

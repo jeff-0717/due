@@ -69,7 +69,7 @@ class _EditCountdownPageState extends ConsumerState<EditCountdownPage> {
   Future<void> _save() async {
     final title = _titleController.text.trim();
     if (title.isEmpty) {
-      setState(() => _titleError = 'Title is required');
+      setState(() => _titleError = '请输入标题');
       return;
     }
 
@@ -107,15 +107,15 @@ class _EditCountdownPageState extends ConsumerState<EditCountdownPage> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete'),
-        content: const Text('Are you sure?'),
+        title: const Text('删除'),
+        content: const Text('确定要删除吗？'),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel')),
+              child: const Text('取消')),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: const Text('删除', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -131,7 +131,7 @@ class _EditCountdownPageState extends ConsumerState<EditCountdownPage> {
     return Scaffold(
       backgroundColor: AppTokens.background,
       appBar: AppBar(
-        title: const Text('Edit Countdown'),
+        title: const Text('编辑倒计时'),
         actions: [
           if (!_notFound)
             IconButton(
@@ -154,7 +154,7 @@ class _EditCountdownPageState extends ConsumerState<EditCountdownPage> {
                     ),
                     const SizedBox(height: 16),
                     const Text(
-                      'Countdown not found',
+                      '未找到倒计时',
                       style: TextStyle(
                         fontSize: AppTokens.fontSizeBody,
                         color: AppTokens.textSecondary,
@@ -163,7 +163,7 @@ class _EditCountdownPageState extends ConsumerState<EditCountdownPage> {
                     const SizedBox(height: 16),
                     TextButton(
                       onPressed: _goBack,
-                      child: const Text('Back to home'),
+                      child: const Text('返回首页'),
                     ),
                   ],
                 ),
@@ -182,13 +182,13 @@ class _EditCountdownPageState extends ConsumerState<EditCountdownPage> {
                       }
                     },
                     decoration: const InputDecoration(
-                      labelText: 'Title',
-                      hintText: 'e.g. Final Exam',
+                      labelText: '标题',
+                      hintText: '例如：期末考试',
                     ).copyWith(errorText: _titleError),
                   ),
                   const SizedBox(height: 24),
                   const Text(
-                    'Target Date',
+                    '目标日期',
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -223,7 +223,7 @@ class _EditCountdownPageState extends ConsumerState<EditCountdownPage> {
                   ),
                   const SizedBox(height: 24),
                   const Text(
-                    'Repeat',
+                    '重复',
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -233,8 +233,8 @@ class _EditCountdownPageState extends ConsumerState<EditCountdownPage> {
                   const SizedBox(height: 8),
                   SegmentedButton<String>(
                     segments: const [
-                      ButtonSegment(value: 'once', label: Text('Once')),
-                      ButtonSegment(value: 'yearly', label: Text('Yearly')),
+                      ButtonSegment(value: 'once', label: Text('一次')),
+                      ButtonSegment(value: 'yearly', label: Text('每年')),
                     ],
                     selected: {_repeatType},
                     onSelectionChanged: (v) =>
@@ -242,7 +242,7 @@ class _EditCountdownPageState extends ConsumerState<EditCountdownPage> {
                   ),
                   const SizedBox(height: 24),
                   const Text(
-                    'Color',
+                    '颜色',
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -256,7 +256,7 @@ class _EditCountdownPageState extends ConsumerState<EditCountdownPage> {
                   ),
                   const SizedBox(height: 24),
                   const Text(
-                    'Icon',
+                    '图标',
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -273,7 +273,7 @@ class _EditCountdownPageState extends ConsumerState<EditCountdownPage> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: _isSaving ? null : _save,
-                      child: Text(_isSaving ? 'Saving...' : 'Save'),
+                      child: Text(_isSaving ? '保存中...' : '保存'),
                     ),
                   ),
                 ],
