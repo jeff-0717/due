@@ -17,8 +17,12 @@
 ## 环境状态
 - Flutter SDK：`C:\flutter\bin`（已加入用户 PATH）
 - 项目目录：`D:\my github\due`
-- 依赖安装：待执行 `flutter pub get`
-- 开发者模式：待开启（`start ms-settings:developers`）
+- Android SDK：已配置，`flutter doctor` Android toolchain OK
+- 依赖安装：已完成
+- 本地测试：`flutter test` 16/16 通过
+- APK 构建：`flutter build apk` 已通过
+- APK 输出：`build/app/outputs/flutter-apk/app-release.apk`
+- 模拟器验证：BlueStacks `127.0.0.1:5555` 可安装并启动
 
 ---
 
@@ -48,18 +52,40 @@
 | 3 | `createdAt` 保留旧值不重置 | ✅ | `review_start_repository.dart` |
 | 4 | UI token 统一（新增 `fontSizeSmall`, `fontSizeHero`, `radiusMedium`, `radiusLarge`） | ✅ | `app_tokens.dart`, `countdown_overview.dart`, `countdown_card.dart` |
 
-### ⏳ 待完成（Task 11-18）
+### ✅ 已完成（Task 11-18：MVP 收口）
 
 | # | 任务 | 状态 | 文件 |
 |---|------|------|------|
-| 11 | 实现首页（交互完善） | ⏳ | `pages/home_page.dart` |
-| 12 | 实现添加/编辑页 | ⏳ | `pages/add_countdown_page.dart`, `pages/edit_countdown_page.dart` |
-| 13 | 实现复习开始日期页 | ⏳ | `pages/review_start_page.dart` |
-| 14 | 实现设置页 | ⏳ | `pages/settings_page.dart` |
-| 15 | 实现 Widget 预览页 | ⏳ | `pages/widget_preview_page.dart` |
-| 16 | 实现 widget_sync_service.dart | ⏳ | `services/widget_sync_service.dart` |
-| 17 | 实现 Android Widget 最小版本 | ⏳ | `android/` 原生代码 |
-| 18 | 跑通本地构建 | ⏳ | `flutter build apk` |
+| 11 | 首页交互完善 | ✅ | `pages/home_page.dart`, `widgets/countdown_overview.dart`, `widgets/countdown_card.dart` |
+| 12 | 添加/编辑页完善 | ✅ | `pages/add_countdown_page.dart`, `pages/edit_countdown_page.dart` |
+| 13 | 复习开始日期页完善 | ✅ | `pages/review_start_page.dart` |
+| 14 | 设置页完善 | ✅ | `pages/settings_page.dart` |
+| 15 | Widget 预览页完善 | ✅ | `pages/widget_preview_page.dart` |
+| 16 | Widget 同步服务完善 | ✅ | `services/widget_sync_service.dart`, `providers/widget_sync_provider.dart` |
+| 17 | Android Widget 最小链路补齐 | ✅ | `android/app/src/main/` |
+| 18 | 本地测试与 APK 构建跑通 | ✅ | `flutter test`, `flutter build apk` |
+
+### ✅ 已完成（启动崩溃热修复）
+
+| # | 修正 | 状态 | 文件 |
+|---|------|------|------|
+| 1 | 修复安装后启动即崩溃：移除 WorkManager 自动初始化 | ✅ | `android/app/src/main/AndroidManifest.xml` |
+| 2 | 记录崩溃根因、日志特征和复验命令 | ✅ | `docs/report/20260606163143562_android_workmanager_startup_crash.md`, `issues/due-mvp-progress-alignment.csv` |
+
+崩溃关键特征：`androidx.startup.InitializationProvider` -> `androidx.work.WorkManagerInitializer` -> `Failed to create WorkDatabase`。
+
+### ✅ 已完成（记录与专注计时）
+
+| # | 功能 | 状态 | 文件 |
+|---|------|------|------|
+| 1 | 专注 session 持久化与本地日期查询 | ✅ | `models/study_session.dart`, `repositories/study_session_repository.dart`, `services/hive_service.dart` |
+| 2 | 今日专注统计与计时控制器 | ✅ | `providers/study_session_provider.dart` |
+| 3 | 底部导航新增：首页、院校、记录、设置 | ✅ | `pages/app_shell_page.dart`, `router/app_router.dart` |
+| 4 | 记录页：45:00、开始/暂停/继续/结束/重置、今日统计 | ✅ | `pages/record_page.dart` |
+| 5 | 学习记录页：日/周/月/年、汇总、分布、表格 | ✅ | `pages/study_records_page.dart` |
+| 6 | 本轮回归验证 | ✅ | `dart analyze`, `flutter test` 47/47, `flutter build apk` |
+
+本轮未走 Stitch/前端总控闭环：CSV `required_mcp` 为空，且 spec 明确本轮排除 UI 美化，仅实现功能闭环。
 
 ---
 
@@ -165,6 +191,7 @@ D:\my github\due\
 | `countdowns` | Countdown JSON |
 | `review_start` | ReviewStart JSON |
 | `widget_config` | WidgetConfig JSON |
+| `study_sessions` | StudySession JSON |
 
 ## 路由
 
@@ -175,12 +202,16 @@ D:\my github\due\
 | `/edit/:id` | 编辑倒计时 |
 | `/review-start` | 复习开始日期 |
 | `/widget-preview` | Widget 预览 |
+| `/monitor` | 院校监控 |
+| `/monitor/:id/hits` | 院校命中记录 |
+| `/record` | 记录 |
+| `/study-records` | 学习记录 |
 | `/settings` | 设置 |
 
 ---
 
 ## 下一步操作
 
-1. **开启开发者模式**：`start ms-settings:developers`
-2. **安装依赖**：`flutter pub get`
-3. **继续 Task 11-18**
+1. **提交当前 MVP 收口与热修复改动**：不提交 `.codex-temp/`。
+2. **基于 MVP 规划下一阶段功能**：先让 Claude 输出 spec，再转 CSV。
+3. **走完整闭环**：`dev-pipeline -> superpowers -> mission -> CSV -> /goal -> verification -> review.md`。
