@@ -6,6 +6,7 @@ import '../models/countdown.dart';
 import '../models/monitor_hit.dart';
 import '../models/monitor_source.dart';
 import '../models/review_start.dart';
+import '../models/study_session.dart';
 import '../models/widget_config.dart';
 
 class HiveService {
@@ -14,12 +15,14 @@ class HiveService {
   static const String widgetConfigBoxName = 'widget_config';
   static const String monitorSourceBoxName = 'monitor_sources';
   static const String monitorHitBoxName = 'monitor_hits';
+  static const String studySessionBoxName = 'study_sessions';
 
   late Box<String> _countdownBox;
   late Box<String> _reviewStartBox;
   late Box<String> _widgetConfigBox;
   late Box<String> _monitorSourceBox;
   late Box<String> _monitorHitBox;
+  late Box<String> _studySessionBox;
 
   Future<void> init() async {
     _countdownBox = await Hive.openBox<String>(countdownBoxName);
@@ -27,6 +30,7 @@ class HiveService {
     _widgetConfigBox = await Hive.openBox<String>(widgetConfigBoxName);
     _monitorSourceBox = await Hive.openBox<String>(monitorSourceBoxName);
     _monitorHitBox = await Hive.openBox<String>(monitorHitBoxName);
+    _studySessionBox = await Hive.openBox<String>(studySessionBoxName);
   }
 
   // Countdown
@@ -127,6 +131,17 @@ class HiveService {
         .toList();
   }
 
+  Future<void> saveStudySession(StudySession item) async {
+    await _studySessionBox.put(item.id, jsonEncode(item.toJson()));
+  }
+
+  List<StudySession> getAllStudySessions() {
+    return _studySessionBox.values
+        .map((raw) =>
+            StudySession.fromJson(jsonDecode(raw) as Map<String, dynamic>))
+        .toList();
+  }
+
   // Clear all
   Future<void> clearAll() async {
     await _countdownBox.clear();
@@ -134,5 +149,6 @@ class HiveService {
     await _widgetConfigBox.clear();
     await _monitorSourceBox.clear();
     await _monitorHitBox.clear();
+    await _studySessionBox.clear();
   }
 }
