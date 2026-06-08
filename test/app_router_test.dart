@@ -2,9 +2,11 @@ import 'package:due/app.dart';
 import 'package:due/providers/countdown_provider.dart';
 import 'package:due/providers/monitor_provider.dart';
 import 'package:due/providers/review_start_provider.dart';
+import 'package:due/providers/study_session_provider.dart';
 import 'package:due/repositories/countdown_repository.dart';
 import 'package:due/repositories/monitor_repository.dart';
 import 'package:due/repositories/review_start_repository.dart';
+import 'package:due/repositories/study_session_repository.dart';
 import 'package:due/services/hive_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,6 +53,9 @@ Widget _buildApp() {
         _FakeReviewStartRepository(),
       ),
       monitorRepositoryProvider.overrideWithValue(MonitorRepository(null)),
+      studySessionRepositoryProvider.overrideWithValue(
+        _FakeStudySessionRepository(),
+      ),
     ],
     child: const DueApp(),
   );
@@ -68,4 +73,11 @@ class _FakeReviewStartRepository extends ReviewStartRepository {
 
   @override
   get() => null;
+}
+
+class _FakeStudySessionRepository extends StudySessionRepository {
+  _FakeStudySessionRepository() : super(HiveService());
+
+  @override
+  getAll() => [];
 }
