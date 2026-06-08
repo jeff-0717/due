@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../pages/app_shell_page.dart';
 import '../pages/home_page.dart';
 import '../pages/add_countdown_page.dart';
 import '../pages/edit_countdown_page.dart';
@@ -10,6 +11,8 @@ import '../pages/settings_page.dart';
 import '../pages/monitor_edit_page.dart';
 import '../pages/monitor_hits_page.dart';
 import '../pages/monitor_list_page.dart';
+import '../pages/record_page.dart';
+import '../pages/study_records_page.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -19,10 +22,33 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/',
     routes: [
-      GoRoute(
-        path: '/',
-        name: 'home',
-        builder: (context, state) => const HomePage(),
+      ShellRoute(
+        builder: (context, state, child) => AppShellPage(
+          location: state.uri.path,
+          child: child,
+        ),
+        routes: [
+          GoRoute(
+            path: '/',
+            name: 'home',
+            builder: (context, state) => const HomePage(),
+          ),
+          GoRoute(
+            path: '/monitor',
+            name: 'monitor',
+            builder: (context, state) => const MonitorListPage(),
+          ),
+          GoRoute(
+            path: '/record',
+            name: 'record',
+            builder: (context, state) => const RecordPage(),
+          ),
+          GoRoute(
+            path: '/settings',
+            name: 'settings',
+            builder: (context, state) => const SettingsPage(),
+          ),
+        ],
       ),
       GoRoute(
         path: '/add',
@@ -47,16 +73,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const WidgetPreviewPage(),
       ),
       GoRoute(
-        path: '/settings',
-        name: 'settings',
-        builder: (context, state) => const SettingsPage(),
-      ),
-      GoRoute(
-        path: '/monitor',
-        name: 'monitor',
-        builder: (context, state) => const MonitorListPage(),
-      ),
-      GoRoute(
         path: '/monitor/edit',
         name: 'monitorAdd',
         builder: (context, state) => const MonitorEditPage(),
@@ -74,6 +90,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => MonitorHitsPage(
           sourceId: state.pathParameters['id']!,
         ),
+      ),
+      GoRoute(
+        path: '/study-records',
+        name: 'studyRecords',
+        builder: (context, state) => const StudyRecordsPage(),
       ),
     ],
   );
