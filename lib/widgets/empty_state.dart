@@ -17,16 +17,25 @@ class EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppTokens.spacing * 2),
+        padding: const EdgeInsets.all(AppTokens.spacingXl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.event_note_outlined,
-              size: 48,
-              color: AppTokens.textSecondary,
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: AppTokens.surfaceLow,
+                borderRadius: BorderRadius.circular(AppTokens.radiusLarge),
+                border: Border.all(color: AppTokens.border),
+              ),
+              child: const Icon(
+                Icons.event_note_outlined,
+                size: 28,
+                color: AppTokens.textSecondary,
+              ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppTokens.spacing),
             Text(
               message,
               style: const TextStyle(
@@ -35,8 +44,8 @@ class EmptyState extends StatelessWidget {
               ),
             ),
             if (onAction != null) ...[
-              const SizedBox(height: 16),
-              TextButton(
+              const SizedBox(height: AppTokens.spacing),
+              OutlinedButton(
                 onPressed: onAction,
                 child: Text(actionLabel),
               ),

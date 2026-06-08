@@ -1,0 +1,7 @@
+id,title,dev_state,review_initial_state,review_regression_state,git_state,acceptance_criteria,notes
+UI-01,Stitch-backed design contract,done,done,done,committed,"Stitch MCP generated a usable design system and local spec records project/screen/design-system IDs.","Project projects/7909151045756809397; screen d0702b4ef7114c338acdac1ef417c297."
+UI-02,Theme and shared component polish,done,done,done,committed,"Theme tokens, cards, buttons, inputs, chips, and empty states match the minimal calm style without changing business behavior.","Verified by dart analyze and flutter test."
+UI-03,Home dashboard polish,done,done,done,committed,"Home shows a calm dashboard, nearest countdown, review days, monitor entry, and sorted countdown list; existing home tests pass.","Verified by test/home_page_test.dart and full flutter test."
+UI-04,Monitoring and hit-record polish,done,done,done,committed,"Monitor source list and hit feed remain functional, searchable, linked, and visually cleaner; existing monitor tests pass.","Verified by test/monitor_pages_test.dart and full flutter test."
+UI-05,Settings polish,done,done,done,committed,"Settings is grouped and readable; about dialog and clear-data flow still pass tests.","Verified by test/settings_page_test.dart and full flutter test."
+REVIEW-01,Verification and delivery,done,done,done,committed,"dart analyze, flutter test, and flutter build apk are run; relevant files are committed on UI-polish.","Verification passed; committed in UI polish delivery."

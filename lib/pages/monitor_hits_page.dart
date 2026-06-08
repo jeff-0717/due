@@ -6,6 +6,8 @@ import '../providers/monitor_provider.dart';
 import '../services/monitor_link_opener.dart';
 import '../theme/app_tokens.dart';
 import '../utils/app_date_utils.dart';
+import '../widgets/app_section.dart';
+import '../widgets/empty_state.dart';
 
 class MonitorHitsPage extends ConsumerStatefulWidget {
   final String sourceId;
@@ -41,18 +43,31 @@ class _MonitorHitsPageState extends ConsumerState<MonitorHitsPage> {
       backgroundColor: AppTokens.background,
       appBar: AppBar(title: Text(source?.schoolName ?? '命中记录')),
       body: hits.isEmpty
-          ? const Center(child: Text('暂无命中记录'))
+          ? const EmptyState(
+              message: '暂无命中记录',
+              actionLabel: '等待下一次检查',
+            )
           : ListView.separated(
-              padding: const EdgeInsets.all(AppTokens.spacing),
+              padding: const EdgeInsets.fromLTRB(
+                AppTokens.pagePadding,
+                AppTokens.spacing,
+                AppTokens.pagePadding,
+                96,
+              ),
               itemCount: filteredHits.isEmpty ? 2 : filteredHits.length + 1,
               separatorBuilder: (_, index) => index == 0
-                  ? const SizedBox(height: 12)
-                  : const SizedBox(height: 8),
+                  ? const SizedBox(height: AppTokens.spacing)
+                  : const SizedBox(height: AppTokens.spacingSm),
               itemBuilder: (context, index) {
                 if (index == 0) {
-                  return _SearchField(
-                    controller: _queryController,
-                    onChanged: _updateQuery,
+                  return AppSection(
+                    title: '命中记录',
+                    subtitle: '按标题、摘要或关键词快速过滤公告',
+                    padding: EdgeInsets.zero,
+                    child: _SearchField(
+                      controller: _queryController,
+                      onChanged: _updateQuery,
+                    ),
                   );
                 }
                 if (filteredHits.isEmpty) {
@@ -100,7 +115,7 @@ class _SearchField extends StatelessWidget {
       controller: controller,
       onChanged: onChanged,
       decoration: const InputDecoration(
-        prefixIcon: Icon(Icons.search),
+        prefixIcon: Icon(Icons.search, size: 20),
         hintText: '搜索标题、摘要或关键词',
       ),
     );
@@ -119,50 +134,78 @@ class _HitCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      margin: EdgeInsets.zero,
       child: Padding(
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(AppTokens.spacing),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              children: [
+                const AppStatusChip(
+                  label: '新公告',
+                  icon: Icons.article_outlined,
+                ),
+                const Spacer(),
+                if (hit.publishedAt != null)
+                  Text(
+                    AppDateUtils.formatDate(hit.publishedAt!),
+                    style: const TextStyle(
+                      fontSize: AppTokens.fontSizeSmall,
+                      color: AppTokens.textMuted,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: AppTokens.spacing),
             Text(
               hit.title,
               style: const TextStyle(
-                fontSize: AppTokens.fontSizeBody,
-                fontWeight: FontWeight.w600,
+                fontSize: AppTokens.fontSizeBodyLarge,
+                fontWeight: FontWeight.w700,
                 color: AppTokens.textPrimary,
+                height: 1.35,
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              '命中关键词：${hit.matchedKeywords.join('、')}',
-              style: const TextStyle(
-                fontSize: AppTokens.fontSizeSmall,
-                color: AppTokens.primary,
-              ),
-            ),
-            if (hit.publishedAt != null) ...[
-              const SizedBox(height: 6),
-              Text(
-                '发布日期：${AppDateUtils.formatDate(hit.publishedAt!)}',
-                style: const TextStyle(
-                  fontSize: AppTokens.fontSizeSmall,
-                  color: AppTokens.textSecondary,
+            const SizedBox(height: AppTokens.spacingSm),
+            Wrap(
+              spacing: AppTokens.spacingSm,
+              runSpacing: AppTokens.spacingSm,
+              children: [
+                Text(
+                  '命中关键词：${hit.matchedKeywords.join('、')}',
+                  style: const TextStyle(
+                    fontSize: AppTokens.fontSizeSmall,
+                    color: AppTokens.primaryDark,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
             if (hit.summary.trim().isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Text(
-                hit.summary,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: AppTokens.fontSizeSmall,
-                  color: AppTokens.textSecondary,
+              const SizedBox(height: AppTokens.spacingSm),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(AppTokens.spacing),
+                decoration: BoxDecoration(
+                  color: AppTokens.surfaceLow,
+                  borderRadius: BorderRadius.circular(AppTokens.radius),
+                  border: Border.all(color: AppTokens.border),
+                ),
+                child: Text(
+                  hit.summary,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: AppTokens.fontSizeSmall,
+                    color: AppTokens.textSecondary,
+                    height: 1.45,
+                  ),
                 ),
               ),
             ],
-            const SizedBox(height: 10),
+            const SizedBox(height: AppTokens.spacingSm),
             Align(
               alignment: Alignment.centerRight,
               child: TextButton.icon(

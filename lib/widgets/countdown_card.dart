@@ -33,20 +33,21 @@ class CountdownCard extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 48,
-                height: 48,
+                width: 44,
+                height: 44,
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(AppTokens.radiusMedium),
+                  color: color.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(AppTokens.radius),
+                  border: Border.all(color: color.withValues(alpha: 0.16)),
                 ),
                 child: Center(
                   child: Text(
                     countdown.icon,
-                    style: const TextStyle(fontSize: AppTokens.fontSizeTitle),
+                    style: const TextStyle(fontSize: 22),
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppTokens.spacing),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,11 +56,13 @@ class CountdownCard extends StatelessWidget {
                       countdown.title,
                       style: const TextStyle(
                         fontSize: AppTokens.fontSizeBody,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w700,
                         color: AppTokens.textPrimary,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppTokens.spacingXs),
                     Text(
                       AppDateUtils.formatDate(nextTarget),
                       style: const TextStyle(
@@ -76,14 +79,14 @@ class CountdownCard extends StatelessWidget {
                   Text(
                     daysLeft.toString(),
                     style: TextStyle(
-                      fontSize: AppTokens.fontSizeLargeNumber,
+                      fontSize: 32,
                       fontWeight: FontWeight.w700,
                       color: color,
                       height: 1.1,
                     ),
                   ),
                   const Text(
-                    '天',
+                    '天后',
                     style: TextStyle(
                       fontSize: 12,
                       color: AppTokens.textSecondary,

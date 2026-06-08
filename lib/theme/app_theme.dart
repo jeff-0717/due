@@ -8,24 +8,37 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       scaffoldBackgroundColor: AppTokens.background,
-      colorScheme: ColorScheme.light(
+      colorScheme: const ColorScheme.light(
         primary: AppTokens.primary,
-        secondary: AppTokens.accent,
+        secondary: AppTokens.secondary,
         surface: AppTokens.card,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onSurface: AppTokens.textPrimary,
         outline: AppTokens.border,
+        error: AppTokens.danger,
       ),
+      splashColor: AppTokens.primary.withValues(alpha: 0.08),
+      highlightColor: AppTokens.primary.withValues(alpha: 0.04),
       appBarTheme: const AppBarTheme(
         backgroundColor: AppTokens.background,
         foregroundColor: AppTokens.textPrimary,
         elevation: 0,
-        centerTitle: true,
+        centerTitle: false,
+        titleTextStyle: TextStyle(
+          color: AppTokens.textPrimary,
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          height: 1.2,
+        ),
       ),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: AppTokens.primary,
         foregroundColor: Colors.white,
+        elevation: 1,
+        focusElevation: 1,
+        hoverElevation: 1,
+        highlightElevation: 1,
       ),
       cardTheme: CardThemeData(
         color: AppTokens.card,
@@ -35,13 +48,13 @@ class AppTheme {
           side: const BorderSide(color: AppTokens.border),
         ),
         margin: const EdgeInsets.symmetric(
-          horizontal: AppTokens.spacing,
+          horizontal: AppTokens.pagePadding,
           vertical: 8,
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppTokens.background,
+        fillColor: AppTokens.card,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTokens.radius),
           borderSide: const BorderSide(color: AppTokens.border),
@@ -52,14 +65,18 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTokens.radius),
-          borderSide: const BorderSide(color: AppTokens.primary, width: 2),
+          borderSide: const BorderSide(color: AppTokens.primary),
         ),
-        contentPadding: const EdgeInsets.all(AppTokens.spacing),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppTokens.spacing,
+          vertical: 14,
+        ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppTokens.primary,
           foregroundColor: Colors.white,
+          elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppTokens.radius),
           ),
@@ -69,16 +86,42 @@ class AppTheme {
           ),
         ),
       ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: AppTokens.primary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppTokens.radius),
+          ),
+        ),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: AppTokens.surfaceLow,
+        selectedColor: AppTokens.successSoft,
+        side: const BorderSide(color: AppTokens.border),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
+        ),
+        labelStyle: const TextStyle(
+          color: AppTokens.textSecondary,
+          fontSize: AppTokens.fontSizeSmall,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
       textTheme: const TextTheme(
         headlineLarge: TextStyle(
           fontSize: AppTokens.fontSizeLargeNumber,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
           color: AppTokens.textPrimary,
           height: 1.1,
         ),
         headlineMedium: TextStyle(
           fontSize: AppTokens.fontSizeTitle,
           fontWeight: FontWeight.w600,
+          color: AppTokens.textPrimary,
+        ),
+        titleMedium: TextStyle(
+          fontSize: AppTokens.fontSizeBodyLarge,
+          fontWeight: FontWeight.w700,
           color: AppTokens.textPrimary,
         ),
         bodyLarge: TextStyle(
@@ -90,6 +133,12 @@ class AppTheme {
           fontSize: AppTokens.fontSizeBody,
           fontWeight: FontWeight.normal,
           color: AppTokens.textSecondary,
+          height: 1.45,
+        ),
+        labelSmall: TextStyle(
+          fontSize: AppTokens.fontSizeSmall,
+          fontWeight: FontWeight.w600,
+          color: AppTokens.textMuted,
         ),
       ),
     );

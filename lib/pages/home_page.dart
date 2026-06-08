@@ -6,6 +6,7 @@ import '../providers/countdown_provider.dart';
 import '../providers/review_start_provider.dart';
 import '../theme/app_tokens.dart';
 import '../utils/app_date_utils.dart';
+import '../widgets/app_section.dart';
 import '../widgets/countdown_card.dart';
 import '../widgets/countdown_overview.dart';
 import '../widgets/empty_state.dart';
@@ -50,7 +51,9 @@ class HomePage extends ConsumerWidget {
       ),
       body: countdowns.isEmpty
           ? ListView(
+              padding: const EdgeInsets.only(bottom: 96),
               children: [
+                _HomeHeader(reviewDays: reviewDays),
                 _MonitorEntry(onTap: () => context.push('/monitor')),
                 if (reviewDays != null) _ReviewDaysCard(days: reviewDays),
                 EmptyState(
@@ -61,50 +64,84 @@ class HomePage extends ConsumerWidget {
               ],
             )
           : ListView(
+              padding: const EdgeInsets.only(bottom: 96),
               children: [
+                _HomeHeader(reviewDays: reviewDays),
                 CountdownOverview(
                   nearest: nearest,
                   reviewDays: reviewDays,
                 ),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(
-                      AppTokens.spacing, 16, AppTokens.spacing, 8),
-                  child: Text(
-                    '全部倒计时',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: AppTokens.textSecondary,
-                    ),
+                _MonitorEntry(onTap: () => context.push('/monitor')),
+                AppSection(
+                  title: '全部倒计时',
+                  subtitle: '按最近日期排序',
+                  child: Column(
+                    children: sorted
+                        .map(
+                          (item) => CountdownCard(
+                            countdown: item,
+                            onTap: () => context.push('/edit/${item.id}'),
+                          ),
+                        )
+                        .toList(),
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    AppTokens.spacing,
-                    0,
-                    AppTokens.spacing,
-                    8,
-                  ),
-                  child: Text(
-                    '按最近日期排序',
-                    style: TextStyle(
-                      fontSize: AppTokens.fontSizeSmall,
-                      color: AppTokens.textSecondary,
-                    ),
-                  ),
-                ),
-                ...sorted.map(
-                  (item) => CountdownCard(
-                    countdown: item,
-                    onTap: () => context.push('/edit/${item.id}'),
-                  ),
-                ),
-                const SizedBox(height: 80),
               ],
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.push('/add'),
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class _HomeHeader extends StatelessWidget {
+  final int? reviewDays;
+
+  const _HomeHeader({required this.reviewDays});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppTokens.pagePadding,
+        AppTokens.spacing,
+        AppTokens.pagePadding,
+        0,
+      ),
+      child: Row(
+        children: [
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '备考日程',
+                  style: TextStyle(
+                    color: AppTokens.textPrimary,
+                    fontSize: AppTokens.fontSizeTitle,
+                    fontWeight: FontWeight.w700,
+                    height: 1.2,
+                  ),
+                ),
+                SizedBox(height: AppTokens.spacingXs),
+                Text(
+                  '把重要日期和院校动态放在一处',
+                  style: TextStyle(
+                    color: AppTokens.textSecondary,
+                    fontSize: AppTokens.fontSizeSmall,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (reviewDays != null)
+            AppStatusChip(
+              label: '复习第 $reviewDays 天',
+              icon: Icons.auto_stories_outlined,
+            ),
+        ],
       ),
     );
   }
@@ -119,17 +156,39 @@ class _MonitorEntry extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(
+        AppTokens.pagePadding,
         AppTokens.spacing,
-        AppTokens.spacing,
-        AppTokens.spacing,
+        AppTokens.pagePadding,
         0,
       ),
       child: Card(
+        margin: EdgeInsets.zero,
         child: ListTile(
-          leading: const Icon(Icons.travel_explore_outlined),
-          title: const Text('院校信息监控'),
-          subtitle: const Text('监控 RSS 和静态公告页面'),
-          trailing: const Icon(Icons.chevron_right),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppTokens.spacing,
+            vertical: AppTokens.spacingSm,
+          ),
+          leading: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppTokens.successSoft,
+              borderRadius: BorderRadius.circular(AppTokens.radius),
+            ),
+            child: const Icon(
+              Icons.travel_explore_outlined,
+              color: AppTokens.primary,
+            ),
+          ),
+          title: const Text(
+            '院校信息监控',
+            style: TextStyle(fontWeight: FontWeight.w700),
+          ),
+          subtitle: const Text('关注招生简章、复试名单、拟录取等动态'),
+          trailing: const Icon(
+            Icons.chevron_right,
+            color: AppTokens.textMuted,
+          ),
           onTap: onTap,
         ),
       ),
@@ -146,12 +205,13 @@ class _ReviewDaysCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(
+        AppTokens.pagePadding,
         AppTokens.spacing,
-        AppTokens.spacing,
-        AppTokens.spacing,
+        AppTokens.pagePadding,
         0,
       ),
       child: Card(
+        margin: EdgeInsets.zero,
         child: Padding(
           padding: const EdgeInsets.all(AppTokens.spacing),
           child: Column(

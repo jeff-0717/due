@@ -27,66 +27,121 @@ class CountdownOverview extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.fromLTRB(
-          AppTokens.spacing, AppTokens.spacing, AppTokens.spacing, 8),
-      padding: const EdgeInsets.all(AppTokens.spacing + 8),
+        AppTokens.pagePadding,
+        AppTokens.spacing,
+        AppTokens.pagePadding,
+        AppTokens.spacing,
+      ),
+      padding: const EdgeInsets.all(AppTokens.spacingLg),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(AppTokens.radiusLarge),
+        color: AppTokens.card,
+        borderRadius: BorderRadius.circular(AppTokens.radius),
+        border: Border.all(color: AppTokens.border),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '最近事项',
-            style: TextStyle(
-              fontSize: AppTokens.fontSizeSmall,
-              fontWeight: FontWeight.w600,
-              color: AppTokens.textSecondary,
-            ),
+          Row(
+            children: [
+              Container(
+                width: 8,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
+                ),
+              ),
+              const SizedBox(width: AppTokens.spacingSm),
+              const Expanded(
+                child: Text(
+                  '最近事项',
+                  style: TextStyle(
+                    fontSize: AppTokens.fontSizeSmall,
+                    fontWeight: FontWeight.w700,
+                    color: AppTokens.textSecondary,
+                  ),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppTokens.spacing),
           Text(
             nearest!.title,
             style: const TextStyle(
-              fontSize: AppTokens.fontSizeTitle,
-              fontWeight: FontWeight.w600,
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
               color: AppTokens.textPrimary,
             ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 8),
-          Text(
-            '$daysLeft',
-            style: TextStyle(
-              fontSize: AppTokens.fontSizeHero,
-              fontWeight: FontWeight.w700,
-              color: color,
-              height: 1.1,
-            ),
-          ),
-          const Text(
-            '天后到期',
-            style: TextStyle(
-              fontSize: AppTokens.fontSizeBody,
-              color: AppTokens.textSecondary,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            AppDateUtils.formatDate(nextTarget),
-            style: const TextStyle(
-              fontSize: AppTokens.fontSizeSmall,
-              color: AppTokens.textSecondary,
-            ),
-          ),
-          if (reviewDays != null) ...[
-            const SizedBox(height: 4),
-            Text(
-              '已复习 $reviewDays 天',
-              style: const TextStyle(
-                fontSize: AppTokens.fontSizeSmall,
-                color: AppTokens.textSecondary,
+          const SizedBox(height: AppTokens.spacing),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                '$daysLeft',
+                style: TextStyle(
+                  fontSize: 60,
+                  fontWeight: FontWeight.w700,
+                  color: color,
+                  height: 0.95,
+                ),
               ),
+              const SizedBox(width: AppTokens.spacingSm),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 6),
+                child: Text(
+                  '天后到期',
+                  style: TextStyle(
+                    fontSize: AppTokens.fontSizeBody,
+                    color: AppTokens.textSecondary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppTokens.spacing),
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppTokens.spacing,
+              vertical: AppTokens.spacingSm,
             ),
-          ],
+            decoration: BoxDecoration(
+              color: AppTokens.surfaceLow,
+              borderRadius: BorderRadius.circular(AppTokens.radius),
+              border: Border.all(color: AppTokens.border),
+            ),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.event_available_outlined,
+                  size: 18,
+                  color: AppTokens.textSecondary,
+                ),
+                const SizedBox(width: AppTokens.spacingSm),
+                Text(
+                  AppDateUtils.formatDate(nextTarget),
+                  style: const TextStyle(
+                    fontSize: AppTokens.fontSizeSmall,
+                    color: AppTokens.textSecondary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                if (reviewDays != null) ...[
+                  const Spacer(),
+                  Text(
+                    '已复习 $reviewDays 天',
+                    style: const TextStyle(
+                      fontSize: AppTokens.fontSizeSmall,
+                      color: AppTokens.primaryDark,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
         ],
       ),
     );
