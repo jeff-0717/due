@@ -3,6 +3,8 @@ import '../models/countdown.dart';
 import '../utils/app_date_utils.dart';
 
 class WidgetSyncService {
+  static const appGroupId = 'group.com.example.due';
+  static const iOSWidgetName = 'DueWidget';
   static const titleKey = 'title';
   static const daysLeftKey = 'daysLeft';
   static const targetDateKey = 'targetDate';
@@ -28,6 +30,7 @@ class WidgetSyncService {
   Future<void> syncCountdown(Countdown countdown) async {
     final data = buildCountdownData(countdown);
 
+    await HomeWidget.setAppGroupId(appGroupId);
     await HomeWidget.saveWidgetData<String>(titleKey, data[titleKey] as String);
     await HomeWidget.saveWidgetData<int>(daysLeftKey, data[daysLeftKey] as int);
     await HomeWidget.saveWidgetData<String>(
@@ -37,15 +40,16 @@ class WidgetSyncService {
 
     await HomeWidget.updateWidget(
       androidName: 'DueWidgetProvider',
-      iOSName: 'DueWidget',
+      iOSName: iOSWidgetName,
     );
   }
 
   Future<void> syncReviewDays(int reviewDays) async {
+    await HomeWidget.setAppGroupId(appGroupId);
     await HomeWidget.saveWidgetData<int>(reviewDaysKey, reviewDays);
     await HomeWidget.updateWidget(
       androidName: 'DueWidgetProvider',
-      iOSName: 'DueWidget',
+      iOSName: iOSWidgetName,
     );
   }
 }
