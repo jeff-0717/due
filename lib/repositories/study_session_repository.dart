@@ -19,7 +19,9 @@ class StudySessionRepository {
     required DateTime startedAt,
     required DateTime endedAt,
     required int durationSeconds,
-    int plannedSeconds = 2700,
+    int? plannedSeconds = 2700,
+    String note = '',
+    String category = '未分类',
   }) async {
     final session = StudySession(
       id: _uuid.v4(),
@@ -27,6 +29,8 @@ class StudySessionRepository {
       endedAt: endedAt,
       durationSeconds: durationSeconds,
       plannedSeconds: plannedSeconds,
+      note: note,
+      category: category,
       createdAt: DateTime.now(),
     );
     await save(session);

@@ -23,7 +23,8 @@ void main() {
     expect(summary.totalSeconds, 1500);
   });
 
-  test('finishing a positive-duration timer saves one session', () async {
+  test('finishing a positive-duration timer saves note and inferred category',
+      () async {
     var now = DateTime(2026, 6, 8, 9);
     final repository = _FakeStudySessionRepository();
     final container = _container(repository: repository, nowGetter: () => now);
@@ -32,11 +33,64 @@ void main() {
 
     timer.start();
     now = now.add(const Duration(minutes: 12));
-    await timer.finish();
+    await timer.finish(note: '数学错题');
 
     expect(repository.items, hasLength(1));
     expect(repository.items.single.durationSeconds, 720);
+    expect(repository.items.single.note, '数学错题');
+    expect(repository.items.single.category, '数学');
     expect(container.read(todayStudySummaryProvider).count, 1);
+  });
+
+  test('finishing maps unsupported notes to other category', () async {
+    var now = DateTime(2026, 6, 8, 9);
+    final repository = _FakeStudySessionRepository();
+    final container = _container(repository: repository, nowGetter: () => now);
+    addTearDown(container.dispose);
+    final timer = container.read(focusTimerProvider.notifier);
+
+    timer.start();
+    now = now.add(const Duration(minutes: 10));
+    await timer.finish(note: '物理真题');
+
+    expect(repository.items.single.note, '物理真题');
+    expect(repository.items.single.category, '其他');
+  });
+
+  test('running fixed timer ticks down while the clock advances', () async {
+    var now = DateTime(2026, 6, 8, 9);
+    final repository = _FakeStudySessionRepository();
+    final container = _container(repository: repository, nowGetter: () => now);
+    addTearDown(container.dispose);
+    final timer = container.read(focusTimerProvider.notifier);
+
+    timer.start();
+    now = now.add(const Duration(seconds: 1));
+    await Future<void>.delayed(const Duration(milliseconds: 1100));
+
+    expect(container.read(focusTimerProvider).remainingSeconds, 2699);
+  });
+
+  test('planned focus duration supports 45 minutes and unlimited mode', () {
+    final repository = _FakeStudySessionRepository();
+    final container = _container(
+      repository: repository,
+      now: DateTime(2026, 6, 8, 9),
+    );
+    addTearDown(container.dispose);
+    final timer = container.read(focusTimerProvider.notifier);
+
+    timer.setMode(FocusTimerMode.unlimited);
+
+    expect(container.read(focusTimerProvider).mode, FocusTimerMode.unlimited);
+    expect(container.read(focusTimerProvider).plannedSeconds, isNull);
+    expect(container.read(focusTimerProvider).remainingSeconds, 0);
+
+    timer.setMode(FocusTimerMode.fixed45);
+
+    expect(container.read(focusTimerProvider).mode, FocusTimerMode.fixed45);
+    expect(container.read(focusTimerProvider).plannedSeconds, 2700);
+    expect(container.read(focusTimerProvider).remainingSeconds, 2700);
   });
 
   test('reset clears the active timer without saving a session', () {
@@ -122,7 +176,9 @@ class _FakeStudySessionRepository extends StudySessionRepository {
     required DateTime startedAt,
     required DateTime endedAt,
     required int durationSeconds,
-    int plannedSeconds = 2700,
+    int? plannedSeconds = 2700,
+    String note = '',
+    String category = '未分类',
   }) async {
     final session = StudySession(
       id: 'session-${items.length + 1}',
@@ -130,6 +186,8 @@ class _FakeStudySessionRepository extends StudySessionRepository {
       endedAt: endedAt,
       durationSeconds: durationSeconds,
       plannedSeconds: plannedSeconds,
+      note: note,
+      category: category,
       createdAt: endedAt,
     );
     await save(session);
