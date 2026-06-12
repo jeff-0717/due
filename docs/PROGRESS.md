@@ -19,7 +19,7 @@
 - 项目目录：`D:\my github\due`
 - Android SDK：已配置，`flutter doctor` Android toolchain OK
 - 依赖安装：已完成
-- 本地测试：`flutter test` 16/16 通过
+- 本地测试：`flutter test` 55/55 通过
 - APK 构建：`flutter build apk` 已通过
 - APK 输出：`build/app/outputs/flutter-apk/app-release.apk`
 - 模拟器验证：BlueStacks `127.0.0.1:5555` 可安装并启动
@@ -56,7 +56,7 @@
 
 | # | 任务 | 状态 | 文件 |
 |---|------|------|------|
-| 11 | 首页交互完善 | ✅ | `pages/home_page.dart`, `widgets/countdown_overview.dart`, `widgets/countdown_card.dart` |
+| 11 | 首页交互与日期倒计时视觉重设计 | ✅ | `pages/home_page.dart`, `test/home_page_test.dart` |
 | 12 | 添加/编辑页完善 | ✅ | `pages/add_countdown_page.dart`, `pages/edit_countdown_page.dart` |
 | 13 | 复习开始日期页完善 | ✅ | `pages/review_start_page.dart` |
 | 14 | 设置页完善 | ✅ | `pages/settings_page.dart` |
@@ -81,11 +81,26 @@
 | 1 | 专注 session 持久化与本地日期查询 | ✅ | `models/study_session.dart`, `repositories/study_session_repository.dart`, `services/hive_service.dart` |
 | 2 | 今日专注统计与计时控制器 | ✅ | `providers/study_session_provider.dart` |
 | 3 | 底部导航新增：首页、院校、记录、设置 | ✅ | `pages/app_shell_page.dart`, `router/app_router.dart` |
-| 4 | 记录页：45:00、开始/暂停/继续/结束/重置、今日统计 | ✅ | `pages/record_page.dart` |
-| 5 | 学习记录页：日/周/月/年、汇总、分布、表格 | ✅ | `pages/study_records_page.dart` |
-| 6 | 本轮回归验证 | ✅ | `dart analyze`, `flutter test` 47/47, `flutter build apk` |
+| 4 | 记录页：45 分钟 / 无限计时、开始/暂停/继续/结束/重置、今日统计 | ✅ | `pages/record_page.dart` |
+| 5 | 计时备注与分类：结束后写入学习记录，支持备注自动推断分类 | ✅ | `models/study_session.dart`, `providers/study_session_provider.dart`, `pages/record_page.dart` |
+| 6 | Android 锁屏通知控制：暂停 / 继续 / 结束，并回传 Flutter 计时状态 | ✅ | `services/focus_notification_service.dart`, `android/app/src/main/kotlin/com/example/due/FocusTimerNotifications.kt`, `FocusTimerActionReceiver.kt`, `MainActivity.kt` |
+| 7 | 学习记录页：日/周/月/年、汇总、时长分布、分类时长图、表格 | ✅ | `pages/study_records_page.dart` |
+| 8 | 本轮回归验证 | ✅ | `dart analyze`, `flutter test` 52/52, `flutter build apk` |
 
-本轮未走 Stitch/前端总控闭环：CSV `required_mcp` 为空，且 spec 明确本轮排除 UI 美化，仅实现功能闭环。
+本轮已完成记录功能闭环；未走 Stitch/前端总控闭环，原因是本轮目标是功能闭环与 Android 锁屏控制，不是 UI 设计生成。剩余人工验收点：Android 13+ 需开启通知权限，锁屏按钮显示受系统锁屏通知设置影响。
+
+---
+
+### ✅ 已完成（首页日期倒计时重设计）
+
+| # | 功能 | 状态 | 文件 |
+|---|------|------|------|
+| 1 | 参考图片与 `app.txt`，重设计首页为备考日程/日期倒计时仪表盘 | ✅ | `pages/home_page.dart` |
+| 2 | 首页保留日期倒计时主卡、复习进度卡、日期计划卡、全部倒计时列表 | ✅ | `pages/home_page.dart` |
+| 3 | 首页不展示图中“今日专注/任务记录”模块，也不显示“院校信息监控”文字 | ✅ | `pages/home_page.dart`, `test/home_page_test.dart`, `test/monitor_pages_test.dart` |
+| 4 | 回归验证 | ✅ | `dart analyze`, `flutter test` 55/55, `flutter build apk` |
+
+本轮使用 `frontend-stitch-loop` 的降级闭环：当前无可调用 Stitch MCP 生成工具，因此按参考图和 `app.txt` 提炼设计合同后直接落 Flutter 实现，并用 390x933 参考视口测试验证首页不溢出。
 
 ---
 
