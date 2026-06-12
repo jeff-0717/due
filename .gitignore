@@ -33,6 +33,12 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# Codex/local task artifacts
+.codex-temp/
+.mission/
+.npmrc
+test/.hive_*/
+
 # Symbolication related
 app.*.symbols
 
