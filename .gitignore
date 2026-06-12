@@ -39,6 +39,9 @@ migrate_working_dir/
 .npmrc
 test/.hive_*/
 
+# Local setup reports that may include account-specific details
+docs/report/*stitch_mcp_codex_client_setup.md
+
 # Symbolication related
 app.*.symbols
 
