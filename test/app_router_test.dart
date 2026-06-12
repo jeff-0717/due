@@ -1,9 +1,11 @@
 import 'package:due/app.dart';
 import 'package:due/providers/countdown_provider.dart';
+import 'package:due/providers/home_config_provider.dart';
 import 'package:due/providers/monitor_provider.dart';
 import 'package:due/providers/review_start_provider.dart';
 import 'package:due/providers/study_session_provider.dart';
 import 'package:due/repositories/countdown_repository.dart';
+import 'package:due/repositories/home_config_repository.dart';
 import 'package:due/repositories/monitor_repository.dart';
 import 'package:due/repositories/review_start_repository.dart';
 import 'package:due/repositories/study_session_repository.dart';
@@ -52,6 +54,9 @@ Widget _buildApp() {
       reviewStartRepositoryProvider.overrideWithValue(
         _FakeReviewStartRepository(),
       ),
+      homeConfigRepositoryProvider.overrideWithValue(
+        _FakeHomeConfigRepository(),
+      ),
       monitorRepositoryProvider.overrideWithValue(MonitorRepository(null)),
       studySessionRepositoryProvider.overrideWithValue(
         _FakeStudySessionRepository(),
@@ -73,6 +78,16 @@ class _FakeReviewStartRepository extends ReviewStartRepository {
 
   @override
   get() => null;
+}
+
+class _FakeHomeConfigRepository extends HomeConfigRepository {
+  _FakeHomeConfigRepository() : super(HiveService());
+
+  @override
+  String? getSelectedCountdownId() => null;
+
+  @override
+  Future<void> saveSelectedCountdownId(String? countdownId) async {}
 }
 
 class _FakeStudySessionRepository extends StudySessionRepository {

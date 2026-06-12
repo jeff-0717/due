@@ -1,18 +1,22 @@
 import 'package:due/models/monitor_hit.dart';
 import 'package:due/models/monitor_source.dart';
 import 'package:due/pages/home_page.dart';
+import 'package:due/pages/monitor_edit_page.dart';
 import 'package:due/pages/monitor_hits_page.dart';
 import 'package:due/pages/monitor_list_page.dart';
 import 'package:due/providers/countdown_provider.dart';
+import 'package:due/providers/home_config_provider.dart';
 import 'package:due/providers/monitor_provider.dart';
 import 'package:due/providers/review_start_provider.dart';
 import 'package:due/repositories/countdown_repository.dart';
+import 'package:due/repositories/home_config_repository.dart';
 import 'package:due/repositories/monitor_repository.dart';
 import 'package:due/repositories/review_start_repository.dart';
 import 'package:due/services/hive_service.dart';
 import 'package:due/services/monitor_check_service.dart';
 import 'package:due/services/monitor_fetch_service.dart';
 import 'package:due/services/monitor_link_opener.dart';
+import 'package:due/theme/app_tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -23,7 +27,7 @@ void main() {
       (tester) async {
     await tester.pumpWidget(_buildApp('/'));
 
-    expect(find.text('院校信息监控'), findsOneWidget);
+    expect(find.byKey(const Key('home_open_monitor')), findsOneWidget);
     expect(find.byIcon(Icons.add), findsOneWidget);
   });
 
@@ -31,6 +35,8 @@ void main() {
       (tester) async {
     await tester.pumpWidget(_buildApp('/monitor'));
 
+    final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
+    expect(scaffold.backgroundColor, AppTokens.homeBackground);
     expect(find.text('暂无监控源'), findsOneWidget);
 
     final container = ProviderScope.containerOf(
@@ -49,6 +55,14 @@ void main() {
     expect(find.text('North University'), findsOneWidget);
     expect(find.textContaining('尚未检查'), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('monitor edit page uses home background', (tester) async {
+    await tester.pumpWidget(_buildApp('/monitor/edit'));
+
+    final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
+    expect(scaffold.backgroundColor, AppTokens.homeBackground);
+    expect(find.byType(MonitorEditPage), findsOneWidget);
   });
 
   testWidgets('monitor list keeps source visible after failed manual check',
@@ -251,6 +265,10 @@ Widget _buildApp(
       GoRoute(path: '/', builder: (_, __) => const HomePage()),
       GoRoute(path: '/monitor', builder: (_, __) => const MonitorListPage()),
       GoRoute(
+        path: '/monitor/edit',
+        builder: (_, __) => const MonitorEditPage(),
+      ),
+      GoRoute(
         path: '/monitor/:id/hits',
         builder: (_, state) => MonitorHitsPage(
           sourceId: state.pathParameters['id']!,
@@ -279,6 +297,9 @@ Widget _buildApp(
       reviewStartRepositoryProvider.overrideWithValue(
         _FakeReviewStartRepository(),
       ),
+      homeConfigRepositoryProvider.overrideWithValue(
+        _FakeHomeConfigRepository(),
+      ),
       monitorRepositoryProvider.overrideWithValue(monitorRepository),
       monitorCheckServiceProvider.overrideWithValue(
         MonitorCheckService(
@@ -304,6 +325,16 @@ class _FakeReviewStartRepository extends ReviewStartRepository {
 
   @override
   get() => null;
+}
+
+class _FakeHomeConfigRepository extends HomeConfigRepository {
+  _FakeHomeConfigRepository() : super(HiveService());
+
+  @override
+  String? getSelectedCountdownId() => null;
+
+  @override
+  Future<void> saveSelectedCountdownId(String? countdownId) async {}
 }
 
 class _EmptyFetcher implements MonitorCandidateFetcher {

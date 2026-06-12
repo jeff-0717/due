@@ -13,6 +13,8 @@ class HiveService {
   static const String countdownBoxName = 'countdowns';
   static const String reviewStartBoxName = 'review_start';
   static const String widgetConfigBoxName = 'widget_config';
+  static const String homeConfigBoxName = 'home_config';
+  static const String _homeSelectedCountdownKey = 'selected_countdown_id';
   static const String monitorSourceBoxName = 'monitor_sources';
   static const String monitorHitBoxName = 'monitor_hits';
   static const String studySessionBoxName = 'study_sessions';
@@ -20,6 +22,7 @@ class HiveService {
   late Box<String> _countdownBox;
   late Box<String> _reviewStartBox;
   late Box<String> _widgetConfigBox;
+  late Box<String> _homeConfigBox;
   late Box<String> _monitorSourceBox;
   late Box<String> _monitorHitBox;
   late Box<String> _studySessionBox;
@@ -28,6 +31,7 @@ class HiveService {
     _countdownBox = await Hive.openBox<String>(countdownBoxName);
     _reviewStartBox = await Hive.openBox<String>(reviewStartBoxName);
     _widgetConfigBox = await Hive.openBox<String>(widgetConfigBoxName);
+    _homeConfigBox = await Hive.openBox<String>(homeConfigBoxName);
     _monitorSourceBox = await Hive.openBox<String>(monitorSourceBoxName);
     _monitorHitBox = await Hive.openBox<String>(monitorHitBoxName);
     _studySessionBox = await Hive.openBox<String>(studySessionBoxName);
@@ -99,6 +103,20 @@ class HiveService {
     await _widgetConfigBox.delete(id);
   }
 
+  String? getHomeSelectedCountdownId() {
+    final value = _homeConfigBox.get(_homeSelectedCountdownKey);
+    return value == null || value.trim().isEmpty ? null : value;
+  }
+
+  Future<void> saveHomeSelectedCountdownId(String? countdownId) async {
+    final value = countdownId?.trim();
+    if (value == null || value.isEmpty) {
+      await _homeConfigBox.delete(_homeSelectedCountdownKey);
+      return;
+    }
+    await _homeConfigBox.put(_homeSelectedCountdownKey, value);
+  }
+
   Future<void> saveMonitorSource(MonitorSource item) async {
     await _monitorSourceBox.put(item.id, jsonEncode(item.toJson()));
   }
@@ -147,6 +165,7 @@ class HiveService {
     await _countdownBox.clear();
     await _reviewStartBox.clear();
     await _widgetConfigBox.clear();
+    await _homeConfigBox.clear();
     await _monitorSourceBox.clear();
     await _monitorHitBox.clear();
     await _studySessionBox.clear();

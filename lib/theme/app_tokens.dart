@@ -8,6 +8,10 @@ class AppTokens {
   static const Color primaryDark = Color(0xFF0F5238);
   static const Color secondary = Color(0xFF52796F);
   static const Color accent = Color(0xFFB75D4A);
+  static const Color homeBackground = Color(0xFFFAFAF7);
+  static const Color homeSage = Color(0xFFA7B690);
+  static const Color homeSageDark = Color(0xFF394627);
+  static const Color homeWarmGray = Color(0xFFE8E8E4);
   static const Color background = Color(0xFFF8F9FA);
   static const Color surfaceLow = Color(0xFFF3F4F5);
   static const Color card = Color(0xFFFFFFFF);

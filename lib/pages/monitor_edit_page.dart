@@ -51,8 +51,11 @@ class _MonitorEditPageState extends ConsumerState<MonitorEditPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTokens.background,
+      backgroundColor: AppTokens.homeBackground,
       appBar: AppBar(
+        backgroundColor: AppTokens.homeBackground,
+        foregroundColor: AppTokens.homeSageDark,
+        elevation: 0,
         title: Text(widget.id == null ? '添加监控源' : '编辑监控源'),
       ),
       body: Form(

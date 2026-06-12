@@ -40,8 +40,13 @@ class _MonitorHitsPageState extends ConsumerState<MonitorHitsPage> {
     final opener = ref.watch(monitorLinkOpenerProvider);
 
     return Scaffold(
-      backgroundColor: AppTokens.background,
-      appBar: AppBar(title: Text(source?.schoolName ?? '命中记录')),
+      backgroundColor: AppTokens.homeBackground,
+      appBar: AppBar(
+        title: Text(source?.schoolName ?? '命中记录'),
+        backgroundColor: AppTokens.homeBackground,
+        foregroundColor: AppTokens.homeSageDark,
+        elevation: 0,
+      ),
       body: hits.isEmpty
           ? const EmptyState(
               message: '暂无命中记录',
@@ -134,6 +139,7 @@ class _HitCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Colors.white,
       margin: EdgeInsets.zero,
       child: Padding(
         padding: const EdgeInsets.all(AppTokens.spacing),

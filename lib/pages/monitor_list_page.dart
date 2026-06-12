@@ -18,8 +18,11 @@ class MonitorListPage extends ConsumerWidget {
     final checkStates = ref.watch(monitorCheckStateProvider);
 
     return Scaffold(
-      backgroundColor: AppTokens.background,
+      backgroundColor: AppTokens.homeBackground,
       appBar: AppBar(
+        backgroundColor: AppTokens.homeBackground,
+        foregroundColor: AppTokens.homeSageDark,
+        elevation: 0,
         title: const Text('院校动态'),
         actions: [
           IconButton(
@@ -200,6 +203,7 @@ class _MonitorSourceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Colors.white,
       margin: EdgeInsets.zero,
       child: Padding(
         padding: const EdgeInsets.all(AppTokens.spacing),

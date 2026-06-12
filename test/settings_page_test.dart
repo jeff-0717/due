@@ -8,6 +8,7 @@ import 'package:due/repositories/countdown_repository.dart';
 import 'package:due/repositories/review_start_repository.dart';
 import 'package:due/repositories/widget_config_repository.dart';
 import 'package:due/services/hive_service.dart';
+import 'package:due/theme/app_tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,6 +19,8 @@ void main() {
     final fakes = _SettingsFakes();
     await tester.pumpWidget(_buildSettings(fakes));
 
+    final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
+    expect(scaffold.backgroundColor, AppTokens.homeBackground);
     await tester.tap(find.text('关于 Due'));
     await tester.pumpAndSettle();
 

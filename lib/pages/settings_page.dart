@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/countdown_provider.dart';
+import '../providers/home_config_provider.dart';
 import '../providers/hive_provider.dart';
 import '../providers/monitor_provider.dart';
 import '../providers/review_start_provider.dart';
@@ -18,8 +19,11 @@ class SettingsPage extends ConsumerWidget {
     final reviewStart = ref.watch(reviewStartProvider);
 
     return Scaffold(
-      backgroundColor: AppTokens.background,
+      backgroundColor: AppTokens.homeBackground,
       appBar: AppBar(
+        backgroundColor: AppTokens.homeBackground,
+        foregroundColor: AppTokens.homeSageDark,
+        elevation: 0,
         title: const Text('设置'),
       ),
       body: ListView(
@@ -105,6 +109,7 @@ class SettingsPage extends ConsumerWidget {
                     if (confirm == true) {
                       await ref.read(hiveServiceProvider).clearAll();
                       ref.invalidate(countdownListProvider);
+                      ref.invalidate(homeSelectedCountdownProvider);
                       ref.invalidate(reviewStartProvider);
                       ref.invalidate(widgetConfigProvider);
                       ref.invalidate(monitorSourceListProvider);
@@ -133,7 +138,7 @@ class SettingsPage extends ConsumerWidget {
     VoidCallback? onTap,
   }) {
     final textColor = isDestructive ? AppTokens.danger : AppTokens.textPrimary;
-    final iconColor = isDestructive ? AppTokens.danger : AppTokens.primary;
+    final iconColor = isDestructive ? AppTokens.danger : AppTokens.homeSageDark;
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(
         horizontal: AppTokens.spacing,
@@ -143,7 +148,9 @@ class SettingsPage extends ConsumerWidget {
         width: 38,
         height: 38,
         decoration: BoxDecoration(
-          color: isDestructive ? AppTokens.dangerSoft : AppTokens.successSoft,
+          color: isDestructive
+              ? AppTokens.dangerSoft
+              : AppTokens.homeSage.withValues(alpha: 0.18),
           borderRadius: BorderRadius.circular(AppTokens.radius),
         ),
         child: Icon(icon, color: iconColor, size: 20),
@@ -180,6 +187,7 @@ class _SettingsGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Colors.white,
       margin: EdgeInsets.zero,
       child: Column(
         children: [
