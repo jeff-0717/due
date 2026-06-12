@@ -1,33 +1,82 @@
-# Long Task Loop Template
+# Due
 
-这是给新项目复制用的基础模板。
+Due 是一个面向备考学生的 Flutter 应用，用来管理考试倒计时、复习天数、专注学习记录和院校公告监控。
 
-## 复制到新项目
+## 功能
 
-在 PowerShell 中执行：
+- 日期倒计时：首页展示目标考试剩余天数，支持多个重要日期。
+- 复习记录：记录复习开始日，展示已坚持复习天数。
+- 专注计时：支持 45 分钟和无限计时，保存学习时长、备注和分类。
+- 学习统计：按日、周、月、年查看专注时长分布和分类统计。
+- 院校监控：配置院校公告源和关键词，手动检查命中记录并打开原文。
+- 桌面组件：Android AppWidget 和 iOS WidgetKit 展示已选择的倒计时。
 
-```powershell
-Copy-Item -Recurse -Force "D:\my github\.codex-templates\long-task-loop\*" "D:\path\to\your-project\"
+## 下载
+
+发布包会放在 GitHub Releases：
+
+- Android：下载 `apk` 后直接安装。
+- iOS：下载未签名 `ipa`，使用 SideStore / AltStore 自行签名安装。
+
+> iOS 侧载用户需要使用自己的 Apple ID 签名。免费开发者签名通常需要定期续签。
+
+## 从源码运行
+
+环境要求：
+
+- Flutter 3.x
+- Dart 3.x
+- Android SDK
+- iOS 构建需要 macOS + Xcode
+
+安装依赖：
+
+```bash
+flutter pub get
 ```
 
-然后在新项目里对 Codex 说：
+运行测试：
 
-```text
-按当前项目技术栈，适配 AGENTS.md / CLAUDE.md 和 CSV 模板。先读取项目结构、README、依赖文件和测试配置，只做规则文件适配，不改业务代码。
+```bash
+dart analyze
+flutter test
 ```
 
-## 日常触发
+构建 Android APK：
 
-```text
-用完整闭环跑这个任务：……
+```bash
+flutter build apk --release
 ```
 
-或分阶段：
+构建未签名 iOS App：
 
-```text
-先用 brainstorming 帮我澄清这个需求：……
-把这个需求写成 spec，放到 docs/superpowers/specs
-用 mission-approved-doc 把 @docs/superpowers/specs/xxx.md 转成 CSV
-/goal @issues/xxx.csv
-用 mission-recovery 继续上次任务
+```bash
+flutter build ios --release --no-codesign
 ```
+
+如果要手动打包未签名 IPA：
+
+```bash
+mkdir Payload
+cp -R build/ios/iphoneos/Runner.app Payload/
+zip -r Due-ios-unsigned.ipa Payload
+```
+
+## iOS App Group
+
+仓库默认使用：
+
+- Bundle ID：`com.example.due`
+- App Group：`group.com.example.due`
+
+如果你改了 Bundle ID，也要同步修改 iOS Runner 和 Widget Extension 的 App Group 配置。
+
+## 开发状态
+
+当前本地验证：
+
+- `dart analyze`
+- `flutter test`
+- `flutter build apk`
+
+iOS 构建需要在 macOS 或 GitHub Actions 的 macOS runner 上验证。
