@@ -1,0 +1,118 @@
+name: Build release packages
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  android:
+    name: Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: dart analyze
+
+      - name: Test
+        run: flutter test
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Prepare APK artifact
+        run: |
+          mkdir -p dist
+          cp build/app/outputs/flutter-apk/app-release.apk dist/Due-android.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Due-android-apk
+          path: dist/Due-android.apk
+
+  ios:
+    name: iOS unsigned IPA
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: dart analyze
+
+      - name: Test widget sync
+        run: flutter test test/widget_sync_service_test.dart
+
+      - name: Build iOS app without codesign
+        run: flutter build ios --release --no-codesign
+
+      - name: Package unsigned IPA
+        run: |
+          mkdir -p dist Payload
+          cp -R build/ios/iphoneos/Runner.app Payload/
+          zip -qry dist/Due-ios-unsigned.ipa Payload
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Due-ios-unsigned-ipa
+          path: dist/Due-ios-unsigned.ipa
+
+  release:
+    name: Publish GitHub Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs:
+      - android
+      - ios
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/Due-android.apk
+            dist/Due-ios-unsigned.ipa
+          body: |
+            Android users can install the APK directly.
+
+            iOS users should sideload the unsigned IPA with SideStore or AltStore and sign it with their own Apple ID.
