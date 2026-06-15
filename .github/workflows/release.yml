@@ -30,6 +30,9 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Show Flutter doctor
+        run: flutter doctor -v
+
       - name: Install dependencies
         run: flutter pub get
 
@@ -40,7 +43,16 @@ jobs:
         run: flutter test
 
       - name: Build APK
-        run: flutter build apk --release
+        run: |
+          set -o pipefail
+          flutter build apk --release --verbose 2>&1 | tee android-build.log
+
+      - name: Upload Android build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-build-log
+          path: android-build.log
 
       - name: Prepare APK artifact
         run: |
