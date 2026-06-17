@@ -1,5 +1,7 @@
 # Due
-![Due app icon](assets/app_icon/due-app-icon-source.png)
+<p align="center">
+  <img src="assets/app_icon/due-app-icon-source.png" width="120" alt="Due app icon">
+</p>
 
 Due 是一个面向备考学生的 Flutter 应用，用来管理考试倒计时、复习天数、专注学习记录和院校公告监控。
 
