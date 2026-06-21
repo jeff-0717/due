@@ -60,36 +60,29 @@ struct DueWidgetView: View {
     var entry: DueProvider.Entry
 
     var body: some View {
-        HStack(spacing: 12) {
-            RoundedRectangle(cornerRadius: 2)
-                .fill(Color(hex: entry.colorHex))
-                .frame(width: 4)
+        VStack(spacing: 10) {
+            Text("\(entry.title)还剩")
+                .font(.system(size: 15, weight: .bold))
+                .foregroundColor(.primary)
+                .lineLimit(1)
 
-            VStack(alignment: .leading, spacing: 6) {
-                Text(entry.icon)
-                    .font(.system(size: 18))
-                Text(entry.title)
-                    .font(.system(size: 15, weight: .semibold))
-                    .lineLimit(1)
-                Text(entry.targetDate)
-                    .font(.system(size: 12))
-                    .foregroundColor(.secondary)
-                    .lineLimit(1)
-            }
+            Text("\(entry.daysLeft)")
+                .font(.system(size: 46, weight: .bold))
+                .foregroundColor(Color(hex: entry.colorHex))
+                .minimumScaleFactor(0.7)
 
-            Spacer(minLength: 8)
+            Text(entry.title)
+                .font(.system(size: 14, weight: .bold))
+                .foregroundColor(.primary)
+                .lineLimit(1)
 
-            VStack(alignment: .trailing, spacing: 2) {
-                Text("\(entry.daysLeft)")
-                    .font(.system(size: 34, weight: .bold))
-                    .foregroundColor(Color(hex: entry.colorHex))
-                    .minimumScaleFactor(0.7)
-                Text("days")
-                    .font(.system(size: 12))
-                    .foregroundColor(.secondary)
-            }
+            Text(entry.targetDate)
+                .font(.system(size: 15, weight: .bold))
+                .foregroundColor(Color(hex: entry.colorHex))
+                .lineLimit(1)
         }
-        .padding(14)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(16)
         .widgetHostBackground()
     }
 }
@@ -127,9 +120,9 @@ extension View {
     @ViewBuilder
     func widgetHostBackground() -> some View {
         if #available(iOSApplicationExtension 17.0, *) {
-            self.containerBackground(.fill.tertiary, for: .widget)
+            self.containerBackground(Color(red: 0.95, green: 0.94, blue: 1.0), for: .widget)
         } else {
-            self.background(Color(.systemBackground))
+            self.background(Color(red: 0.95, green: 0.94, blue: 1.0))
         }
     }
 }

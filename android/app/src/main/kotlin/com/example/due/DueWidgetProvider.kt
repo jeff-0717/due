@@ -18,17 +18,16 @@ class DueWidgetProvider : HomeWidgetProvider() {
         appWidgetIds.forEach { widgetId ->
             val title = widgetData.getString("title", null) ?: "Due"
             val targetDate = widgetData.getString("targetDate", null) ?: "请选择倒计时"
-            val icon = widgetData.getString("icon", null) ?: "D"
             val daysLeft = widgetData.getInt("daysLeft", 0)
             val accentColor = parseColor(widgetData.getString("color", null))
 
             val views = RemoteViews(context.packageName, R.layout.due_widget).apply {
-                setTextViewText(R.id.widget_icon, icon)
-                setTextViewText(R.id.widget_title, title)
+                setTextViewText(R.id.widget_title, "${title}还剩")
+                setTextViewText(R.id.widget_subtitle, title)
                 setTextViewText(R.id.widget_target_date, targetDate)
                 setTextViewText(R.id.widget_days_left, daysLeft.toString())
                 setTextColor(R.id.widget_days_left, accentColor)
-                setInt(R.id.widget_accent, "setBackgroundColor", accentColor)
+                setTextColor(R.id.widget_target_date, accentColor)
 
                 val launchIntent = HomeWidgetLaunchIntent.getActivity(
                     context,
