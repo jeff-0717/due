@@ -8,7 +8,7 @@
     android:orientation="horizontal"
     android:padding="14dp">
 
-    <View
+    <FrameLayout
         android:id="@+id/widget_accent"
         android:layout_width="4dp"
         android:layout_height="match_parent"
