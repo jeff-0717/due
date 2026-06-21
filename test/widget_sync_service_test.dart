@@ -77,6 +77,18 @@ void main() {
     expect(runnerEntitlements, contains('group.com.example.due'));
     expect(widgetEntitlements, contains('group.com.example.due'));
   });
+
+  test('iOS widget source stays compatible with its deployment target',
+      () async {
+    final project =
+        await File('ios/Runner.xcodeproj/project.pbxproj').readAsString();
+    final widgetSource =
+        await File('ios/DueWidget/DueWidget.swift').readAsString();
+
+    expect(project, contains('IPHONEOS_DEPLOYMENT_TARGET = 14.0;'));
+    expect(widgetSource, isNot(contains('.foregroundStyle')));
+    expect(widgetSource, contains('widgetHostBackground()'));
+  });
 }
 
 Countdown _countdown() {
