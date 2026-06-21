@@ -4,80 +4,59 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/due_widget_background"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:padding="14dp">
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <FrameLayout
-        android:id="@+id/widget_accent"
-        android:layout_width="4dp"
-        android:layout_height="match_parent"
-        android:background="#2563EB" />
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_marginStart="12dp"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/widget_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:text="D"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/widget_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:ellipsize="end"
-            android:includeFontPadding="false"
-            android:maxLines="1"
-            android:text="Due"
-            android:textColor="#0F172A"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/widget_target_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:ellipsize="end"
-            android:includeFontPadding="false"
-            android:maxLines="1"
-            android:text="请选择倒计时"
-            android:textColor="#64748B"
-            android:textSize="12sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+    <TextView
+        android:id="@+id/widget_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
         android:gravity="center"
-        android:orientation="vertical">
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:text="考研还剩"
+        android:textColor="#334155"
+        android:textSize="15sp"
+        android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/widget_days_left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:text="0"
-            android:textColor="#2563EB"
-            android:textSize="34sp"
-            android:textStyle="bold" />
+    <TextView
+        android:id="@+id/widget_days_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:includeFontPadding="false"
+        android:text="0"
+        android:textColor="#159A8B"
+        android:textSize="46sp"
+        android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:text="天"
-            android:textColor="#64748B"
-            android:textSize="12sp" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/widget_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:text="目标日期"
+        android:textColor="#334155"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/widget_target_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:text="请选择倒计时"
+        android:textColor="#159A8B"
+        android:textSize="15sp"
+        android:textStyle="bold" />
 </LinearLayout>
