@@ -36,7 +36,7 @@ void main() {
     expect(fakes.config.item?.countdownId, 'exam');
     expect(fakes.sync.synced.single.id, 'exam');
     expect(
-      find.textContaining('已同步，请回到桌面长按空白处添加 Due 倒计时组件'),
+      find.textContaining('请在系统小组件/窗口小工具列表中手动添加'),
       findsOneWidget,
     );
   });

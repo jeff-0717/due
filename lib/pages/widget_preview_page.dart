@@ -103,7 +103,7 @@ class WidgetPreviewPage extends ConsumerWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text(
-                                '已同步，请回到桌面长按空白处添加 Due 倒计时组件',
+                                '已同步数据。请在系统小组件/窗口小工具列表中手动添加 Due 倒计时。',
                               ),
                             ),
                           );

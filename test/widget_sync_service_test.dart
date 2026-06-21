@@ -6,20 +6,26 @@ import 'package:due/utils/app_date_utils.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('buildCountdownData matches Android widget keys', () {
+  test('widget sync contract exposes stable platform identifiers', () {
+    expect(WidgetSyncService.androidWidgetName, 'DueWidgetProvider');
+    expect(WidgetSyncService.iOSWidgetName, 'DueWidget');
+    expect(WidgetSyncService.appGroupId, 'group.com.example.due');
+  });
+
+  test('buildCountdownData matches shared widget keys', () {
     final countdown = _countdown();
     final data = WidgetSyncService.buildCountdownData(countdown);
 
-    expect(data['title'], 'Final Exam');
+    expect(data[WidgetSyncService.titleKey], 'Final Exam');
     expect(
-        data['daysLeft'],
+        data[WidgetSyncService.daysLeftKey],
         AppDateUtils.daysUntil(
           countdown.targetDate,
           countdown.repeatType,
         ));
-    expect(data['targetDate'], isA<String>());
-    expect(data['color'], '#2563EB');
-    expect(data['icon'], 'E');
+    expect(data[WidgetSyncService.targetDateKey], isA<String>());
+    expect(data[WidgetSyncService.colorKey], '#2563EB');
+    expect(data[WidgetSyncService.iconKey], 'E');
   });
 
   test('Android widget provider uses launcher-friendly minimum size', () async {

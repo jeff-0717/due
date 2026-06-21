@@ -4,6 +4,7 @@ import '../utils/app_date_utils.dart';
 
 class WidgetSyncService {
   static const appGroupId = 'group.com.example.due';
+  static const androidWidgetName = 'DueWidgetProvider';
   static const iOSWidgetName = 'DueWidget';
   static const titleKey = 'title';
   static const daysLeftKey = 'daysLeft';
@@ -39,7 +40,7 @@ class WidgetSyncService {
     await HomeWidget.saveWidgetData<String>(iconKey, data[iconKey] as String);
 
     await HomeWidget.updateWidget(
-      androidName: 'DueWidgetProvider',
+      androidName: androidWidgetName,
       iOSName: iOSWidgetName,
     );
   }
@@ -48,7 +49,7 @@ class WidgetSyncService {
     await HomeWidget.setAppGroupId(appGroupId);
     await HomeWidget.saveWidgetData<int>(reviewDaysKey, reviewDays);
     await HomeWidget.updateWidget(
-      androidName: 'DueWidgetProvider',
+      androidName: androidWidgetName,
       iOSName: iOSWidgetName,
     );
   }
