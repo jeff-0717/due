@@ -125,6 +125,6 @@ jobs:
             dist/Due-android.apk
             dist/Due-ios-unsigned.ipa
           body: |
-            Android users can install the APK directly.
+            Android 用户：下载 Due-android.apk 后直接安装。
 
-            iOS users should sideload the unsigned IPA with SideStore or AltStore and sign it with their own Apple ID.
+            iOS 用户：下载 Due-ios-unsigned.ipa 后，使用 SideStore、AltStore 或 Sideloadly 自行签名安装。
