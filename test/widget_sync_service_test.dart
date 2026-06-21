@@ -28,9 +28,22 @@ void main() {
 
     expect(xml, contains('android:minWidth="180dp"'));
     expect(xml, contains('android:minHeight="72dp"'));
+    expect(xml, contains('android:minResizeWidth="180dp"'));
+    expect(xml, contains('android:minResizeHeight="72dp"'));
     expect(xml, contains('android:targetCellWidth="3"'));
     expect(xml, contains('android:targetCellHeight="1"'));
     expect(xml, contains('android:widgetCategory="home_screen"'));
+  });
+
+  test('Android widget layout uses RemoteViews-compatible primitives',
+      () async {
+    final xml = await File('android/app/src/main/res/layout/due_widget.xml')
+        .readAsString();
+
+    expect(xml, isNot(contains('<View')));
+    expect(xml, contains('<FrameLayout'));
+    expect(xml, contains('<LinearLayout'));
+    expect(xml, contains('<TextView'));
   });
 
   test('Android manifest registers the AppWidget receiver', () async {

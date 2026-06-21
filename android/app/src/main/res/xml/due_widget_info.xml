@@ -4,6 +4,8 @@
     android:initialLayout="@layout/due_widget"
     android:minWidth="180dp"
     android:minHeight="72dp"
+    android:minResizeWidth="180dp"
+    android:minResizeHeight="72dp"
     android:previewLayout="@layout/due_widget"
     android:resizeMode="horizontal|vertical"
     android:targetCellWidth="3"
