@@ -2,6 +2,15 @@ import SwiftUI
 import WidgetKit
 
 private let appGroupId = "group.com.example.due"
+private let defaultColorHex = "#2563EB"
+
+private enum WidgetKeys {
+    static let title = "title"
+    static let targetDate = "targetDate"
+    static let daysLeft = "daysLeft"
+    static let icon = "icon"
+    static let color = "color"
+}
 
 struct DueEntry: TimelineEntry {
     let date: Date
@@ -20,7 +29,7 @@ struct DueProvider: TimelineProvider {
             targetDate: "Select countdown",
             daysLeft: 0,
             icon: "D",
-            colorHex: "#2563EB"
+            colorHex: defaultColorHex
         )
     }
 
@@ -38,11 +47,11 @@ struct DueProvider: TimelineProvider {
         let defaults = UserDefaults(suiteName: appGroupId)
         return DueEntry(
             date: Date(),
-            title: defaults?.string(forKey: "title") ?? "Due",
-            targetDate: defaults?.string(forKey: "targetDate") ?? "Select countdown",
-            daysLeft: defaults?.integer(forKey: "daysLeft") ?? 0,
-            icon: defaults?.string(forKey: "icon") ?? "D",
-            colorHex: defaults?.string(forKey: "color") ?? "#2563EB"
+            title: defaults?.string(forKey: WidgetKeys.title) ?? "Due",
+            targetDate: defaults?.string(forKey: WidgetKeys.targetDate) ?? "Select countdown",
+            daysLeft: defaults?.integer(forKey: WidgetKeys.daysLeft) ?? 0,
+            icon: defaults?.string(forKey: WidgetKeys.icon) ?? "D",
+            colorHex: defaults?.string(forKey: WidgetKeys.color) ?? defaultColorHex
         )
     }
 }
@@ -64,7 +73,7 @@ struct DueWidgetView: View {
                     .lineLimit(1)
                 Text(entry.targetDate)
                     .font(.system(size: 12))
-                    .foregroundStyle(.secondary)
+                    .foregroundColor(.secondary)
                     .lineLimit(1)
             }
 
@@ -73,14 +82,15 @@ struct DueWidgetView: View {
             VStack(alignment: .trailing, spacing: 2) {
                 Text("\(entry.daysLeft)")
                     .font(.system(size: 34, weight: .bold))
-                    .foregroundStyle(Color(hex: entry.colorHex))
+                    .foregroundColor(Color(hex: entry.colorHex))
                     .minimumScaleFactor(0.7)
                 Text("days")
                     .font(.system(size: 12))
-                    .foregroundStyle(.secondary)
+                    .foregroundColor(.secondary)
             }
         }
         .padding(14)
+        .widgetHostBackground()
     }
 }
 
@@ -101,12 +111,26 @@ extension Color {
     init(hex: String) {
         let sanitized = hex.trimmingCharacters(in: CharacterSet(charactersIn: "#"))
         var value: UInt64 = 0
-        Scanner(string: sanitized).scanHexInt64(&value)
+        guard Scanner(string: sanitized).scanHexInt64(&value), sanitized.count == 6 else {
+            self.init(hex: defaultColorHex)
+            return
+        }
 
         let red = Double((value >> 16) & 0xFF) / 255.0
         let green = Double((value >> 8) & 0xFF) / 255.0
         let blue = Double(value & 0xFF) / 255.0
         self.init(red: red, green: green, blue: blue)
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func widgetHostBackground() -> some View {
+        if #available(iOSApplicationExtension 17.0, *) {
+            self.containerBackground(.fill.tertiary, for: .widget)
+        } else {
+            self.background(Color(.systemBackground))
+        }
     }
 }
 
